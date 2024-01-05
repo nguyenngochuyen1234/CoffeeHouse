@@ -8,7 +8,11 @@ export default {
     extend: {
       colors:{
         'green_1': '#00000026',
-        'header1': 'rgba(255, 255, 255, 0.8)',
+        'product_name': '#191919',
+        'product_price': '#00000099',
+      },
+      maxWidth:{
+        'banner_size': '30rem',
       }
     },
   },
