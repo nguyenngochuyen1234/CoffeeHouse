@@ -6,7 +6,7 @@ const MenuList = () => {
     <div className="px-8 py-8">
       <Row>
         <Col span={12}>
-          <Image src={banner1} className="rounded-lg shadow-2xl max-w-[570px] max-h-auto ml-4" alt="banner" preview={false}/>
+          <Image src={banner1} className="rounded-lg shadow-2xl max-w-[600px] max-h-auto ml-4" alt="banner" preview={false}/>
         </Col>
         <Col span={6}>
           <CardComponent/>
