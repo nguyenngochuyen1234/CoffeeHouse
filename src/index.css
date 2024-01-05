@@ -91,3 +91,8 @@ p {
     margin-bottom: 10px;
     line-height: 24px;
 }
+
+.footer-introduce p{
+    font-size: 14px;
+    color: #fff;
+}

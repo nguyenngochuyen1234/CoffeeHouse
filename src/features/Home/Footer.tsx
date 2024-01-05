@@ -8,21 +8,21 @@ const Footer = () => {
       <Row>
         <Col span={6}>
           <p className="text-[16px] font-semibold mb-[16px]">Giới thiệu</p>
-          <div className="text-[12px] mb-[8px]">
-          <p>Về chúng tôi</p>
-          <p>Sản phẩm</p>
-          <p>Khuyến mại</p>
-          <p>Chuyện cà phê</p>
-          <p>Cửa hàng </p>
-          <p>Tuyển dụng</p>
+          <div className="footer-introduce">
+          <a href=""><p className="text-[12px]">Về chúng tôi</p></a>
+          <a href=""><p>Sản phẩm</p></a>
+          <a href=""><p>Khuyến mại</p></a>
+          <a href=""><p>Chuyện cà phê</p></a>
+          <a href=""><p>Cửa hàng </p></a>
+          <a href=""><p>Tuyển dụng</p></a>
           </div>
         </Col>
         <Col span={6}>
           <p className="text-[16px] font-semibold mb-[16px]">Điều khoản</p>
-          <div className="text-[12px] mb-[8px]">
-          <p>Điều khoản sử dụng</p>
-          <p>Chính sách bảo mật thông tin</p>
-          <p>Hướng dẫn sử dụng hóa đơn GTGT</p> 
+          <div className="text-[12px] mb-[8px] footer-introduce">
+          <a href=""><p>Điều khoản sử dụng</p></a>
+          <a href=""><p>Chính sách bảo mật thông tin</p></a>
+          <a href=""><p>Hướng dẫn sử dụng hóa đơn GTGT</p></a> 
           </div>
         </Col>
         <Col span={6}>
