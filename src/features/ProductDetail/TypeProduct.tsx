@@ -5,10 +5,10 @@ import { SearchOutlined, TrophyFilled } from '@ant-design/icons';
 import { Col, Row } from 'antd';
 import React from 'react';
 
-const TypeProduct = () => {
+const TypeProduct = () => {    
     return (
-        <div className='h-[1000px] mx-24 mt-[70px] pt-[50px] bg-[#ccc]'>
-            <div className='px-3.5'>
+        <div className='h-[900px] mx-24 mt-[130px] mb-[120px]'>
+            <div className='ml-1.5'>
                 <div>
                     <Row>
                         <Col span={7} offset={8}>
@@ -33,7 +33,15 @@ const TypeProduct = () => {
                     <CardTypeProductComponent/>
                     <CardTypeProductComponent/>
                </div>
-               <div className='flex gap-10 items-center px-10'>
+               <div className='flex flex-wrap gap-6 items-center px-10 mt-10'>
+                    <CardProductComponent/>
+                    <CardProductComponent/>
+                    <CardProductComponent/>
+                    <CardProductComponent/>
+                    <CardProductComponent/>
+                    <CardProductComponent/>
+                    <CardProductComponent/>
+                    <CardProductComponent/>
                     <CardProductComponent/>
                </div>
             </div>
