@@ -5,6 +5,7 @@ import TypeNews from "./features/Admin/TypeNews";
 import News from "./features/Admin/News";
 import TypeProduct from "./features/Admin/TypeProduct";
 import Product from "./features/Admin/Product";
+import ProductDetailPage from "./pages/ProductDetailPage";
 function App() {
 
 
@@ -17,6 +18,7 @@ function App() {
         <Route path='typeNews' element={<TypeNews />} />
         <Route path='news' element={<News />} />
       </Route>
+      <Route path="/product-detail" element={<ProductDetailPage/>} />
     </Routes>
   )
 }

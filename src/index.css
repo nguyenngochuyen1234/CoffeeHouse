@@ -99,3 +99,7 @@ p {
     width: 100vw;
     height: calc(100vh - 61px);
 }
+.footer-introduce p{
+    font-size: 14px;
+    color: #fff;
+}
