@@ -10,7 +10,7 @@
 }
 
 .cloud-tea{
-    background: url('../public/images/menu/tra_xanh_bg.webp');
+    background: url('../../coffee-house/src/assets/images/menu/tra_xanh_bg.webp');
     height: 750px;
     max-width: 1400px;
     margin-left: auto;
@@ -70,12 +70,15 @@ a {
     transition-duration: 0.3s;
     transform: scale(1);
     cursor: pointer;
+    
 }
 .blog_item_img:hover{
     transform: scale(1.1);
 }
 .blog_item .ant-image{
     border-radius: 0.75rem;
+    max-height: 210px;
+    overflow: hidden;
 }
 .blog_item .article_item_info h3 {
     overflow: hidden;
@@ -90,4 +93,9 @@ a {
 p {
     margin-bottom: 10px;
     line-height: 24px;
+}
+
+.admin-container{
+    width: 100vw;
+    height: calc(100vh - 61px);
 }

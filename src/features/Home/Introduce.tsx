@@ -1,6 +1,6 @@
 import { Carousel } from 'antd';
 import React from 'react';
-import imgTitle from '../../../public/images/menu/tra_xanh_title.webp'
+import imgTitle from '../../assets/images/menu/tra_xanh_title.webp'
 
 const contentStyle: React.CSSProperties = {
   margin: 0,
