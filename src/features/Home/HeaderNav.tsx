@@ -10,7 +10,7 @@ const HeaderNav = () => {
         <Col span={19}>
           <span className='text-left text-lg font-semibold mr-7 cursor-pointer'>Cà phê</span>
           <span className='text-left text-lg font-semibold mr-7 cursor-pointer'>Trà ô long</span>
-          <span className='text-left text-lg font-semibold mr-7 cursor-pointer'>12345677</span>
+          <span className='text-left text-lg font-semibold mr-7 cursor-pointer'>Trà sữa</span>
         </Col>
       </Row>
     </div>
