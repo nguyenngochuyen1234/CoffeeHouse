@@ -7,7 +7,7 @@ import React from 'react';
 
 const TypeProduct = () => {    
     return (
-        <div className='h-[900px] mx-24 mt-[130px] mb-[120px]'>
+        <div className='h-[900px] mx-44 mt-[130px] mb-[120px]'>
             <div className='ml-1.5'>
                 <div>
                     <Row>
@@ -33,7 +33,7 @@ const TypeProduct = () => {
                     <CardTypeProductComponent/>
                     <CardTypeProductComponent/>
                </div>
-               <div className='flex flex-wrap gap-6 items-center px-10 mt-10'>
+               <div className='flex flex-wrap gap-[17px] items-center px-10 mt-10'>
                     <CardProductComponent/>
                     <CardProductComponent/>
                     <CardProductComponent/>

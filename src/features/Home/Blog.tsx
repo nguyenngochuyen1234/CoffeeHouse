@@ -77,7 +77,7 @@ const BlogList = () => {
       {
         blogsData.map(blog => {
           return (
-            <div className="w-[1400px] mx-auto px-4">
+            <div className="mx-auto px-4">
               <h3 className="blog_home_blogtitle">{blog.blogTitle}</h3>
               <div className="flex flex-wrap">
                 {
