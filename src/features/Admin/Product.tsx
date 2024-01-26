@@ -1,21 +1,16 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import type { GetRef } from 'antd';
+import type { InputRef } from 'antd';
 import { Button, Form, Input, Popconfirm, Table } from 'antd';
-
-type InputRef = GetRef<typeof Input>;
-type FormInstance<T> = GetRef<typeof Form<T>>;
+import type { FormInstance } from 'antd/es/form';
+import { AnyObject } from 'antd/es/_util/type';
+import { DeleteOutlined, EditOutlined,PlusOutlined } from '@ant-design/icons';
+import typeNewsApi from '@/api/typeNewsApi';
+import { typeNews } from '@/models';
+import ModalAddTypeNews from '@/components/Admin/modal/ModalAddTypeNews';
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
-interface Item {
-  Product_ID: string;
-  TypeProduct_ID: string;
-  name: string;
-  iamge: string;
-  price: number;
-  description: string;
-  
-}
+
 
 interface EditableRowProps {
   index: number;
@@ -36,18 +31,14 @@ interface EditableCellProps {
   title: React.ReactNode;
   editable: boolean;
   children: React.ReactNode;
-  dataIndex: keyof Item;
-  record: Item;
-  handleSave: (record: Item) => void;
+
 }
 
 const EditableCell: React.FC<EditableCellProps> = ({
   title,
   editable,
   children,
-  dataIndex,
-  record,
-  handleSave,
+
   ...restProps
 }) => {
   const [editing, setEditing] = useState(false);
@@ -60,17 +51,12 @@ const EditableCell: React.FC<EditableCellProps> = ({
     }
   }, [editing]);
 
-  const toggleEdit = () => {
-    setEditing(!editing);
-    form.setFieldsValue({ [dataIndex]: record[dataIndex] });
-  };
+
 
   const save = async () => {
     try {
       const values = await form.validateFields();
 
-      toggleEdit();
-      handleSave({ ...record, ...values });
     } catch (errInfo) {
       console.log('Save failed:', errInfo);
     }
@@ -82,7 +68,6 @@ const EditableCell: React.FC<EditableCellProps> = ({
     childNode = editing ? (
       <Form.Item
         style={{ margin: 0 }}
-        name={dataIndex}
         rules={[
           {
             required: true,
@@ -93,7 +78,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
         <Input ref={inputRef} onPressEnter={save} onBlur={save} />
       </Form.Item>
     ) : (
-      <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>
+      <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }}>
         {children}
       </div>
     );
@@ -105,79 +90,97 @@ const EditableCell: React.FC<EditableCellProps> = ({
 type EditableTableProps = Parameters<typeof Table>[0];
 
 interface DataType {
-    Product_ID: string;
-    TypeProduct_ID: string;
-    name: string;
-    iamge: string;
-    price: number;
-    description: string;
+  key: number;
+  TypeNews_ID: string;
+  TypeNews_Name: string;
+
 }
+
 
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 
-const Product = () => {
-  const [dataSource, setDataSource] = useState<DataType[]>([
-    {
-        Product_ID: 'a',
-        TypeProduct_ID: 'a',
-        name: 'a',
-        iamge: 'a',
-        price: 100,
-        description: 'a',
-    },
-  ]);
+const Product: React.FC = () => {
+  const [dataSource, setDataSource] = useState<DataType[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await typeNewsApi.getAllTypeNews();
+        if(response?.data){
+          let dt = response.data.map((item:typeNews)=>{
+            return{
+              key:item.TypeNews_ID,
+              ...item
+            }
+          })
+          console.log({dt})
+          setDataSource(dt)
+        }
+        console.log({response})
+      } catch (err) {
+        console.error('Error fetching data:', err);
+      }
+    };
 
-  const [count, setCount] = useState(2);
+    fetchData();
+  }, [])
 
-  const handleDelete = () => {
-    // const newData = dataSource.filter((item) => item.key !== key);
-    // setDataSource(newData);
+  const handleDelete = async(key: number) => {
+    try{
+      const newData = dataSource.filter((item) => item.key !== key);
+      setDataSource(newData);
+      await typeNewsApi.deleteTypeNews(key)
+    }catch(err){
+      console.error(err)
+    }
   };
 
   const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
     {
-      title: 'name',
-      dataIndex: 'name',
-      width: '30%',
-      editable: true,
+      title: 'ID',
+      dataIndex: 'TypeNews_ID',
+      width: '150px',
     },
     {
-      title: 'price',
-      dataIndex: 'price',
+      title: 'Tên loại tin tức',
+      dataIndex: 'TypeNews_Name',
     },
     {
-      title: 'description',
-      dataIndex: 'description',
-    },
-    {
-      title: 'operation',
-      dataIndex: 'operation',
-      render: (_, record: { key: React.Key }) =>
+      title: 'Hành động',
+      dataIndex: 'action',
+      width: "110px",
+      render: (_, record: AnyObject) =>
         dataSource.length >= 1 ? (
-          <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete()}>
-            <a>Delete</a>
-          </Popconfirm>
+          <div className='flex gap-4'>
+            <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+              <DeleteOutlined className='text-[red] text-[18px]' />
+            </Popconfirm>
+            <EditOutlined className='text-[18px] text-[#1677ff] cursor-pointer' />
+          </div>
         ) : null,
     },
   ];
 
   const handleAdd = () => {
     // const newData: DataType = {
-     
+    //   key: count,
+    //   name: `Edward King ${count}`,
+    //   age: '32',
+    //   address: `London, Park Lane no. ${count}`,
     // };
     // setDataSource([...dataSource, newData]);
     // setCount(count + 1);
   };
 
   const handleSave = (row: DataType) => {
-    // const newData = [...dataSource];
-    // const index = newData.findIndex((item) => row.key === item.key);
-    // const item = newData[index];
-    // newData.splice(index, 1, {
-    //   ...item,
-    //   ...row,
-    // });
-    // setDataSource(newData);
+    const newData = [...dataSource];
+    const index = newData.findIndex((item) => row.key === item.key);
+    const item = newData[index];
+    newData.splice(index, 1, {
+      ...item,
+      ...row,
+    });
+    setDataSource(newData);
   };
 
   const components = {
@@ -205,11 +208,11 @@ const Product = () => {
 
   return (
     <div>
-      <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 ,position:'absolute', top:'15px'}}>
-        Add a row
+      <ModalAddTypeNews isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
+      <Button className='my-4' type="primary" icon={<PlusOutlined />} onClick={()=>setIsModalOpen(true)} >
+        Thêm loại tin tức
       </Button>
       <Table
-        className='mt-2'
         components={components}
         rowClassName={() => 'editable-row'}
         bordered
@@ -221,3 +224,4 @@ const Product = () => {
 };
 
 export default Product;
+
