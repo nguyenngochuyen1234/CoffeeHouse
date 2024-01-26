@@ -5,7 +5,7 @@ import type { FormInstance } from 'antd/es/form';
 import { AnyObject } from 'antd/es/_util/type';
 import { DeleteOutlined, EditOutlined,PlusOutlined } from '@ant-design/icons';
 import typeNewsApi from '@/api/typeNewsApi';
-import { typeNews } from '@/models';
+import { typeNews, typeNewsRows } from '@/models';
 import ModalAddTypeNews from '@/components/Admin/modal/ModalAddTypeNews';
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
@@ -56,7 +56,6 @@ const EditableCell: React.FC<EditableCellProps> = ({
   const save = async () => {
     try {
       const values = await form.validateFields();
-
     } catch (errInfo) {
       console.log('Save failed:', errInfo);
     }
@@ -100,7 +99,7 @@ interface DataType {
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 
 const TypeNews: React.FC = () => {
-  const [dataSource, setDataSource] = useState<DataType[]>([]);
+  const [dataSource, setDataSource] = useState<typeNewsRows[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
@@ -208,7 +207,7 @@ const TypeNews: React.FC = () => {
 
   return (
     <div>
-      <ModalAddTypeNews isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
+      <ModalAddTypeNews isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setDataSource={setDataSource} />
       <Button className='my-4' type="primary" icon={<PlusOutlined />} onClick={()=>setIsModalOpen(true)} >
         Thêm loại tin tức
       </Button>

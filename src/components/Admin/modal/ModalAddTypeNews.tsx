@@ -1,25 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, Form, Input } from 'antd';
 import PropTypes from "prop-types";
-
+import typeNewsApi from '@/api/typeNewsApi';
+import { typeNewsRows } from '@/models';
 
 export interface ModalAddTypeNewsProps {
   isModalOpen: boolean
   setIsModalOpen: (newValue: boolean) => void
-  // items: Array<{ label: string; nav: string }>
+  setDataSource: React.Dispatch<React.SetStateAction<typeNewsRows[]>>
 }
 const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 20 },
 };
 
-const formTailLayout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 8, offset: 4 },
-};
-
-
-const ModalAddTypeNews: React.FC<ModalAddTypeNewsProps> = ({ isModalOpen, setIsModalOpen }) => {
+const ModalAddTypeNews: React.FC<ModalAddTypeNewsProps> = ({ isModalOpen, setIsModalOpen, setDataSource }) => {
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState('Content of the modal');
@@ -30,14 +25,17 @@ const ModalAddTypeNews: React.FC<ModalAddTypeNewsProps> = ({ isModalOpen, setIsM
     form.validateFields(['nickname']);
   }, [checkNick, form]);
 
-  const onCheckboxChange = (e: { target: { checked: boolean } }) => {
-    setCheckNick(e.target.checked);
-  };
-
   const onCheck = async () => {
     try {
       const values = await form.validateFields();
-      console.log('Success:', values);
+      let dt = await typeNewsApi.AddTypeNews(values)
+
+      setDataSource((prev: typeNewsRows[]) => [...prev, {
+        key: values.TypeNews_Name,
+        TypeNews_ID: values.TypeNews_Name,
+        TypeNews_Name: values.TypeNews_Name,
+      }])
+      setIsModalOpen(false)
     } catch (errorInfo) {
       console.log('Failed:', errorInfo);
     }
@@ -61,7 +59,7 @@ const ModalAddTypeNews: React.FC<ModalAddTypeNewsProps> = ({ isModalOpen, setIsM
         <Form form={form} name="dynamic_rule" style={{ maxWidth: 600 }}>
           <Form.Item
             {...formItemLayout}
-            name="username"
+            name="TypeNews_Name"
             label="Tên loại tin tức"
             rules={[{ required: true, message: 'Vui lòng nhập' }]}
           >
