@@ -7,8 +7,6 @@ import TypeProduct from "./features/Admin/TypeProduct";
 import Product from "./features/Admin/Product";
 import ProductDetailPage from "./pages/ProductDetailPage";
 function App() {
-
-
   return (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -22,5 +20,4 @@ function App() {
     </Routes>
   )
 }
-
 export default App
