@@ -6,6 +6,7 @@ import { AnyObject } from 'antd/es/_util/type';
 import { DeleteOutlined, EditOutlined,PlusOutlined } from '@ant-design/icons';
 import typeNewsApi from '@/api/typeNewsApi';
 import { typeNews } from '@/models';
+import ModalAddTypeNews from '@/components/Admin/modal/ModalAddTypeNews';
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
@@ -100,7 +101,7 @@ type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 
 const TypeNews: React.FC = () => {
   const [dataSource, setDataSource] = useState<DataType[]>([]);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -207,8 +208,9 @@ const TypeNews: React.FC = () => {
 
   return (
     <div>
-      <Button className='my-4' type="primary" icon={<PlusOutlined />}>
-        Thêm loại sản phẩm
+      <ModalAddTypeNews isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
+      <Button className='my-4' type="primary" icon={<PlusOutlined />} onClick={()=>setIsModalOpen(true)} >
+        Thêm loại tin tức
       </Button>
       <Table
         components={components}
