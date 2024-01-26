@@ -11,7 +11,6 @@ const MenuList = () => {
       <CardComponent/>
       <CardComponent/>
       <CardComponent/>
-      <CardComponent/>
     </div>
   )
 }
