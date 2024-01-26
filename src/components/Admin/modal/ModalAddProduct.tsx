@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Modal, Form, Input } from 'antd';
-import PropTypes from "prop-types";
+import { Form, Input, Modal } from 'antd';
+import React, { useEffect, useState } from 'react';
 
 
-export interface ModalAddTypeNewsProps {
+export interface ModalAddProductProps {
   isModalOpen: boolean
   setIsModalOpen: (newValue: boolean) => void
   // items: Array<{ label: string; nav: string }>
@@ -13,13 +12,8 @@ const formItemLayout = {
   wrapperCol: { span: 20 },
 };
 
-const formTailLayout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 8, offset: 4 },
-};
 
-
-const ModalAddTypeNews: React.FC<ModalAddTypeNewsProps> = ({ isModalOpen, setIsModalOpen }) => {
+const ModalAddProduct: React.FC<ModalAddProductProps> = ({ isModalOpen, setIsModalOpen }) => {
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState('Content of the modal');
@@ -74,4 +68,4 @@ const ModalAddTypeNews: React.FC<ModalAddTypeNewsProps> = ({ isModalOpen, setIsM
   );
 };
 
-export default ModalAddTypeNews;
+export default ModalAddProduct;

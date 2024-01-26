@@ -4,6 +4,7 @@ import { Button, Form, Input, Popconfirm, Table } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import { AnyObject } from 'antd/es/_util/type';
 import { DeleteOutlined, EditOutlined,PlusOutlined } from '@ant-design/icons';
+
 import typeNewsApi from '@/api/typeNewsApi';
 import { typeNews } from '@/models';
 import ModalAddTypeNews from '@/components/Admin/modal/ModalAddTypeNews';
@@ -52,7 +53,6 @@ const EditableCell: React.FC<EditableCellProps> = ({
   }, [editing]);
 
 
-
   const save = async () => {
     try {
       const values = await form.validateFields();
@@ -91,9 +91,12 @@ type EditableTableProps = Parameters<typeof Table>[0];
 
 interface DataType {
   key: number;
-  TypeNews_ID: string;
-  TypeNews_Name: string;
-
+  Product_ID: string;
+  TypeProduct_ID: string;
+  Product_Name: string;
+  Product_Image: string;
+  Product_Price: Number;
+  Product_Description: String;
 }
 
 
@@ -209,10 +212,11 @@ const Product: React.FC = () => {
   return (
     <div>
       <ModalAddTypeNews isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
-      <Button className='my-4' type="primary" icon={<PlusOutlined />} onClick={()=>setIsModalOpen(true)} >
-        Thêm loại tin tức
+      <Button className='my-4 absolute top-[1px]' type="primary" icon={<PlusOutlined />} onClick={()=>setIsModalOpen(true)} >
+        Thêm sản phẩm
       </Button>
       <Table
+        className='mt-2'
         components={components}
         rowClassName={() => 'editable-row'}
         bordered

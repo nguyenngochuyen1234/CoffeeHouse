@@ -209,10 +209,11 @@ const TypeNews: React.FC = () => {
   return (
     <div>
       <ModalAddTypeNews isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
-      <Button className='my-4' type="primary" icon={<PlusOutlined />} onClick={()=>setIsModalOpen(true)} >
-        Thêm loại tin tức
+      <Button className='my-4 absolute top-[1px]' type="primary" icon={<PlusOutlined />} onClick={()=>setIsModalOpen(true)} >
+        Tạo mới
       </Button>
       <Table
+        className='mt-3'
         components={components}
         rowClassName={() => 'editable-row'}
         bordered
