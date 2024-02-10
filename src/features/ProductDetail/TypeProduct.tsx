@@ -1,12 +1,12 @@
-
-import CardTypeProductComponent from '../../components/CardTypeProductComponent';
-import CardProductComponent from '../../components/CardProductComponent';
+import CardProductComponent from '@/components/ProductDetail/CardProductComponent';
+import CardTypeProductComponent from '@/components/ProductDetail/CardTypeProductComponent';
+import ProductInfomation from '@/components/ProductDetail/ProductInfomation';
 import { SearchOutlined, TrophyFilled } from '@ant-design/icons';
-import { Col, Row } from 'antd';
-import React from 'react';
+
 
 const TypeProduct = () => {    
     return (
+        <>
         <div className='h-[900px] mx-44  mt-[130px] mb-[120px]'>
             <div className='ml-1.5'>
                 <div className='flex justify-center'>
@@ -27,7 +27,7 @@ const TypeProduct = () => {
                     <CardTypeProductComponent/>
                     <CardTypeProductComponent/>
                </div>
-               <div className='flex flex-wrap gap-[17px] items-center px-10 mt-10'>
+               <div className='flex flex-wrap gap-[37px] items-center mt-10'>
                     <CardProductComponent/>
                     <CardProductComponent/>
                     <CardProductComponent/>
@@ -40,6 +40,10 @@ const TypeProduct = () => {
                </div>
             </div>
         </div>
+        <div className='fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center z-50' style={{background: 'rgba(0, 0, 0, 0.4)'}}>
+            <ProductInfomation/>
+        </div>
+        </>
     );
 };
 
