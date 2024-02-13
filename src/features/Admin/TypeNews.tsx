@@ -41,16 +41,8 @@ const EditableCell: React.FC<EditableCellProps> = ({
 
   ...restProps
 }) => {
-  const [editing, setEditing] = useState(false);
   const inputRef = useRef<InputRef>(null);
   const form = useContext(EditableContext)!;
-
-  useEffect(() => {
-    if (editing) {
-      inputRef.current!.focus();
-    }
-  }, [editing]);
-
 
 
   const save = async () => {
@@ -62,26 +54,6 @@ const EditableCell: React.FC<EditableCellProps> = ({
   };
 
   let childNode = children;
-
-  if (editable) {
-    childNode = editing ? (
-      <Form.Item
-        style={{ margin: 0 }}
-        rules={[
-          {
-            required: true,
-            message: `${title} is required.`,
-          },
-        ]}
-      >
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-      </Form.Item>
-    ) : (
-      <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }}>
-        {children}
-      </div>
-    );
-  }
 
   return <td {...restProps}>{childNode}</td>;
 };
@@ -101,6 +73,7 @@ type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 const TypeNews: React.FC = () => {
   const [dataSource, setDataSource] = useState<typeNewsRows[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [dataRow, setDataRow] = useState<AnyObject | null>(null);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -112,7 +85,6 @@ const TypeNews: React.FC = () => {
               ...item
             }
           })
-          console.log({dt})
           setDataSource(dt)
         }
         console.log({response})
@@ -123,7 +95,12 @@ const TypeNews: React.FC = () => {
 
     fetchData();
   }, [])
-
+  
+  const handleEdit = (record: AnyObject) => {
+    setDataRow(record)
+    setIsModalOpen(true)
+  }
+  
   const handleDelete = async(key: number) => {
     try{
       const newData = dataSource.filter((item) => item.key !== key);
@@ -154,21 +131,15 @@ const TypeNews: React.FC = () => {
             <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
               <DeleteOutlined className='text-[red] text-[18px]' />
             </Popconfirm>
-            <EditOutlined className='text-[18px] text-[#1677ff] cursor-pointer' />
+            <EditOutlined onClick={()=>handleEdit(record)} className='text-[18px] text-[#1677ff] cursor-pointer' />
           </div>
         ) : null,
     },
   ];
 
   const handleAdd = () => {
-    // const newData: DataType = {
-    //   key: count,
-    //   name: `Edward King ${count}`,
-    //   age: '32',
-    //   address: `London, Park Lane no. ${count}`,
-    // };
-    // setDataSource([...dataSource, newData]);
-    // setCount(count + 1);
+    setDataRow({})
+    setIsModalOpen(true)
   };
 
   const handleSave = (row: DataType) => {
@@ -207,11 +178,12 @@ const TypeNews: React.FC = () => {
 
   return (
     <div>
-      <ModalAddTypeNews isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setDataSource={setDataSource} />
-      <Button className='my-4' type="primary" icon={<PlusOutlined />} onClick={()=>setIsModalOpen(true)} >
-        Thêm loại tin tức
+      <ModalAddTypeNews isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setDataSource={setDataSource} dataRow={dataRow}/>
+      <Button className='my-4 absolute top-[1px]' type="primary" icon={<PlusOutlined />} onClick={handleAdd} >
+        Tạo mới
       </Button>
       <Table
+        className='mt-3'
         components={components}
         rowClassName={() => 'editable-row'}
         bordered
