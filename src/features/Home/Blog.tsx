@@ -17,7 +17,7 @@ const BlogList = () => {
         if (response?.data) {
           response.data.forEach((item: typeNews) => {
             let blogList = newsFakeApi.filter(news => news.TypeNews_Name == item.TypeNews_Name)
-            console.log({ blogList })
+            // console.log({ blogList })
             blogs.push({
               "blogTitle": item.TypeNews_Name,
               "blogList": blogList
