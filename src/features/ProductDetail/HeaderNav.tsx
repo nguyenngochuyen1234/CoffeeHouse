@@ -8,7 +8,7 @@ const HeaderNav = () => {
           <span className='text-left text-lg font-bold cursor-pointer text-white'>THE COFFEE TLU</span>
         </Col>
         <Col span={12} offset={1}>
-          <span className='text-left text-lg font-semibold mr-7 cursor-pointer text-white'>Cà phê</span>
+          <span className='text-left text-lg font-semibold mr-7 cursor-pointer text-white'></span>
         </Col>
       </Row>
     </div>

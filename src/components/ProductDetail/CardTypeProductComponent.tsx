@@ -1,5 +1,5 @@
 import React from 'react';
-import TypeProduct_img1 from '../assets/type_product/tra_sua.png'
+import TypeProduct_img1 from '../../assets/type_product/tra_sua.png'
 const CardTypeProductComponent = () => {
     return (
             <div className='px-4 py-2'>

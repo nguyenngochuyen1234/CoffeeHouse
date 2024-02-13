@@ -11,6 +11,10 @@ const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 20 },
 };
+const formTailLayout = {
+  labelCol: { span: 4 },
+  wrapperCol: { span: 8, offset: 4 },
+};
 
 
 const ModalAddProduct: React.FC<ModalAddProductProps> = ({ isModalOpen, setIsModalOpen }) => {

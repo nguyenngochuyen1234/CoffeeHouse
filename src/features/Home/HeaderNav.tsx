@@ -7,10 +7,10 @@ const HeaderNav = () => {
         <Col span={5}>
           <span className='text-left text-xl font-bold cursor-pointer'>THE COFFEE TLU</span>
         </Col>
-        <Col span={19}>
-          <span className='text-left text-lg font-semibold mr-7 cursor-pointer'>Cà phê</span>
-          <span className='text-left text-lg font-semibold mr-7 cursor-pointer'>Trà ô long</span>
-          <span className='text-left text-lg font-semibold mr-7 cursor-pointer'>Trà sữa</span>
+        <Col span={19} className='flex justify-start items-center'>
+          <span className='text-left text-sm font-semibold mr-7 cursor-pointer'>Cà phê</span>
+          <span className='text-left text-sm font-semibold mr-7 cursor-pointer'>Trà ô long</span>
+          <span className='text-left text-sm font-semibold mr-7 cursor-pointer'>Trà sữa</span>
         </Col>
       </Row>
     </div>
