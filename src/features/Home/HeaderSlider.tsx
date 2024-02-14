@@ -8,8 +8,8 @@ const SliderHeader = () => {
   
   return (
     <Carousel autoplay className="absolute top-0 left-0 w-full h-full">
-    {imgArray.map((img)=>{
-          return (<Image src={img} alt="slider" preview={false}/>)
+    {imgArray.map((img, idx)=>{
+          return (<Image key={idx} src={img} alt="slider" preview={false}/>)
     })}
   </Carousel>
   )

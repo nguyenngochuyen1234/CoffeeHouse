@@ -211,7 +211,7 @@ const Product: React.FC = () => {
 
   return (
     <div>
-      <ModalAddTypeNews isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
+      {/* <ModalAddTypeNews isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/> */}
       <Button className='my-4 absolute top-[1px]' type="primary" icon={<PlusOutlined />} onClick={()=>setIsModalOpen(true)} >
         Thêm sản phẩm
       </Button>
