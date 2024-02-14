@@ -2,12 +2,17 @@ import CardProductComponent from '@/components/ProductDetail/CardProductComponen
 import CardTypeProductComponent from '@/components/ProductDetail/CardTypeProductComponent';
 import ProductInfomation from '@/components/ProductDetail/ProductInfomation';
 import { SearchOutlined, TrophyFilled } from '@ant-design/icons';
+import { useState } from 'react';
 
 
-const TypeProduct = () => {    
+const TypeProduct = () => { 
+    const [show,setShow]=useState(false);
+    const handleClickClose =()=>{
+        setShow(false);
+    }
     return (
         <>
-        <div className='h-[900px] mx-44  mt-[130px] mb-[120px]'>
+        <div  className='h-[900px] mx-44  mt-[130px] mb-[120px]'>
             <div className='ml-1.5'>
                 <div className='flex justify-center'>
                     <span> <TrophyFilled className='text-2xl text-[#faa515] mb-2'/> 
@@ -28,7 +33,7 @@ const TypeProduct = () => {
                     <CardTypeProductComponent/>
                </div>
                <div className='flex flex-wrap gap-[37px] items-center mt-10'>
-                    <CardProductComponent/>
+                    <span className='btn btn-open' onClick={()=>setShow(true)}><CardProductComponent/></span>
                     <CardProductComponent/>
                     <CardProductComponent/>
                     <CardProductComponent/>
@@ -40,9 +45,7 @@ const TypeProduct = () => {
                </div>
             </div>
         </div>
-        <div className='fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center z-50' style={{background: 'rgba(0, 0, 0, 0.4)'}}>
-            <ProductInfomation/>
-        </div>
+        {show && <ProductInfomation  onClose={handleClickClose}></ProductInfomation>}
         </>
     );
 };
