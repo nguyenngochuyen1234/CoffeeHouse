@@ -3,7 +3,7 @@ import { Image } from 'antd';
 import product_1 from '../../assets/product_1.webp';
 import { useState } from 'react';
 
-const ProductInfomation = () => {
+const ProductInfomation = ({onClose}) => {
     const [quantity,setQuantity]=useState(0)
     const handleClickPlus=()=>{
         setQuantity(quantity+1)
@@ -12,9 +12,10 @@ const ProductInfomation = () => {
         setQuantity(quantity-1)
     }
     return (
-        <div className='bg-white w-[410px] h-[500px] rounded-md overflow-y-scroll'>
+        <div className='fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center z-50' style={{background: 'rgba(0, 0, 0, 0.4)'}}>
+            <div className='bg-white w-[410px] h-[500px] rounded-md overflow-y-scroll'>
             <div className='flex items-center justify-center p-4'>
-                <CloseOutlined className='text-xl opacity-50'/>
+                <CloseOutlined className='text-xl opacity-50'onClick={()=>onClose()}/>
                 <h5 className='text-sm px-24'>Thông tin sản phẩm</h5>
             </div>
             <hr />
@@ -43,6 +44,7 @@ const ProductInfomation = () => {
                 {quantity*45000}đ   Them vao gio hang
             </button>
             </div>
+        </div>
         </div>
     );
 };
