@@ -6,6 +6,7 @@ import ReactQuill from "react-quill";
 import { newsRow, typeNews } from '@/models';
 import { AnyObject } from 'antd/es/_util/type';
 import { convertString } from '@/utils/paragraph';
+import newsApi from '@/api/newsApi';
 
 interface NewsApiResponse {
     id: number;
@@ -39,7 +40,7 @@ const formItemLayout = {
 
 const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setDataSource, dataRow }) => {
     const props = {
-        action: 'http://localhost:8800/api/news',
+        action: 'http://localhost:8800/api/upload',
         onChange(info: any) {
             console.log({ info })
             if (info.file.status !== 'uploading') {
@@ -111,6 +112,7 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
                 ...values,
                 News_ID
             }
+            await newsApi.AddNews(data)
             console.log({ data })
             if (!dataRow?.TypeNews_Name) {
                 //add
