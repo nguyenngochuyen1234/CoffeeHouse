@@ -7,3 +7,12 @@ export function sliceParagraph(inputText: string, maxSize: number) {
         return inputText.substring(0, maxSize) + '...';
     }
 }
+
+export function convertString(string:string) {
+
+    const khongDau = string.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const result = khongDau.replace(/\s+/g, '-').toLowerCase();
+
+    return result;
+}
+

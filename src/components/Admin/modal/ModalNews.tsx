@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Select, Modal, Form, Input, Upload, Button, Col, Row } from 'antd';
+import { Select, Modal, Form, Input, Upload, Button, message, Row } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import typeNewsApi from '@/api/typeNewsApi';
 import ReactQuill from "react-quill";
 import { newsRow, typeNews } from '@/models';
 import { AnyObject } from 'antd/es/_util/type';
+import { convertString } from '@/utils/paragraph';
 
 interface NewsApiResponse {
     id: number;
@@ -37,7 +38,20 @@ const formItemLayout = {
 };
 
 const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setDataSource, dataRow }) => {
+    const props = {
+        action: 'http://localhost:8800/api/news',
+        onChange(info: any) {
+            console.log({ info })
+            if (info.file.status !== 'uploading') {
 
+            }
+            if (info.file.status === 'done') {
+                message.success(`${info.file.name} file uploaded successfully`);
+            } else if (info.file.status === 'error') {
+                message.error(`${info.file.name} file upload failed.`);
+            }
+        },
+    };
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [form] = Form.useForm();
     const [checkNick, setCheckNick] = useState(false);
@@ -68,19 +82,19 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
 
     useEffect(() => {
         const fetchData = async () => {
-          try {
-            const response = await typeNewsApi.getAllTypeNews()
-            if(response?.data){
-                setTypeNews(response.data)
+            try {
+                const response = await typeNewsApi.getAllTypeNews()
+                if (response?.data) {
+                    setTypeNews(response.data)
+                }
+                console.log({ response })
+            } catch (err) {
+                console.error('Error fetching data:', err);
             }
-            console.log({response})
-          } catch (err) {
-            console.error('Error fetching data:', err);
-          }
         };
-    
+
         fetchData();
-      }, [])
+    }, [])
 
     const normFile = (e: any) => {
         console.log('Upload event:', e);
@@ -92,6 +106,12 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
     const onCheck = async () => {
         try {
             const values = await form.validateFields();
+            let News_ID = convertString(values.News_Title)
+            let data = {
+                ...values,
+                News_ID
+            }
+            console.log({ data })
             if (!dataRow?.TypeNews_Name) {
                 //add
                 // let response = await typeNewsApi.News(values)
@@ -145,8 +165,8 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
                         rules={[{ required: true, message: 'Vui lòng nhập' }]}
                     >
                         <Select>
-                            {typeNews?.map(item=><Select.Option value={item.TypeNews_ID}>{item.TypeNews_Name}</Select.Option>)}
-                            
+                            {typeNews?.map(item => <Select.Option value={item.TypeNews_ID}>{item.TypeNews_Name}</Select.Option>)}
+
                         </Select>
                     </Form.Item>
 
@@ -160,6 +180,16 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
                         <Input placeholder="Nhập tên tiêu đề" />
                     </Form.Item>
 
+                    <Form.Item
+                        {...formItemLayout}
+                        name="News_Description"
+                        label="Mô tả"
+
+                        rules={[{ required: true, message: 'Vui lòng nhập' }]}
+                    >
+                        <Input placeholder="Nhập mô tả" />
+                    </Form.Item>
+
 
 
                     <Form.Item
@@ -170,7 +200,7 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
                         getValueFromEvent={normFile}
                         rules={[{ required: true, message: 'Vui lòng nhập' }]}
                     >
-                        <Upload name="logo" action="/upload.do" listType="picture" maxCount={1}>
+                        <Upload listType="picture" name='image' maxCount={1} {...props}>
                             <Button icon={<UploadOutlined />}>Click to upload</Button>
                         </Upload>
                     </Form.Item>
