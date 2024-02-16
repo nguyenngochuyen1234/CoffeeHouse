@@ -17,7 +17,6 @@ const BlogList = () => {
         if (response?.data) {
           response.data.forEach((item: typeNews) => {
             let blogList = newsFakeApi.filter(news => news.TypeNews_Name == item.TypeNews_Name)
-            // console.log({ blogList })
             blogs.push({
               "blogTitle": item.TypeNews_Name,
               "blogList": blogList
@@ -40,9 +39,9 @@ const BlogList = () => {
   return (
     <>
       {
-        blogsData.map(blog => {
+        blogsData.map((blog, idx) => {
           return (
-            <div className="mx-auto px-4" >
+            <div className="mx-auto px-4" key={idx}>
               <h3 className="blog_home_blogtitle">{blog.blogTitle}</h3>
               <div className="flex flex-wrap">
                 {
