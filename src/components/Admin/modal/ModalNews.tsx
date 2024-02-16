@@ -39,15 +39,15 @@ const formItemLayout = {
 };
 
 const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setDataSource, dataRow }) => {
+    const [NewsImage, setNewsImage] = useState('')
     const props = {
         action: 'http://localhost:8800/api/upload',
         onChange(info: any) {
-            console.log({ info })
             if (info.file.status !== 'uploading') {
-
             }
             if (info.file.status === 'done') {
                 message.success(`${info.file.name} file uploaded successfully`);
+                setNewsImage(info.file.response.filename)
             } else if (info.file.status === 'error') {
                 message.error(`${info.file.name} file upload failed.`);
             }
@@ -110,6 +110,7 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
             let News_ID = convertString(values.News_Title)
             let data = {
                 ...values,
+                News_Image:NewsImage,
                 News_ID
             }
             await newsApi.AddNews(data)
