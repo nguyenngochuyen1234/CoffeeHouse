@@ -12,7 +12,7 @@ const TypeProduct = () => {
     }
     return (
         <>
-        <div  className='h-[900px] mx-44  mt-[130px] mb-[120px]'>
+        <div  className='min-h-[900px] mx-44  mt-[130px] mb-[120px]'>
             <div className='ml-1.5'>
                 <div className='flex justify-center'>
                     <span> <TrophyFilled className='text-2xl text-[#faa515] mb-2'/> 
@@ -38,10 +38,11 @@ const TypeProduct = () => {
                     <CardProductComponent/>
                     <CardProductComponent/>
                     <CardProductComponent/>
+                    <CardProductComponent/> 
                     <CardProductComponent/>
+                    <CardProductComponent/> 
                     <CardProductComponent/>
-                    <CardProductComponent/>
-                    <CardProductComponent/>
+                    <CardProductComponent/>     
                </div>
             </div>
         </div>
