@@ -107,11 +107,9 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
     const onCheck = async () => {
         try {
             const values = await form.validateFields();
-            let News_ID = convertString(values.News_Title)
             let data = {
                 ...values,
                 News_Image:NewsImage,
-                News_ID
             }
             await newsApi.AddNews(data)
             console.log({ data })

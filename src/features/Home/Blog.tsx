@@ -1,6 +1,9 @@
+import Test from '@/api/Test';
+import newsApi from '@/api/newsApi';
 import { newsFakeApi } from '@/api/newsFakeApi';
 import typeNewsApi from '@/api/typeNewsApi';
-import { blogsData, newsRow, typeNews } from '@/models';
+
+import { blogsData, news, newsRow, typeNews } from '@/models';
 import { sliceParagraph } from '@/utils/paragraph';
 import { Image } from 'antd';
 import { useEffect, useState } from 'react';
@@ -14,16 +17,19 @@ const BlogList = () => {
       try {
         let blogs: blogsData[] = []
         const response = await typeNewsApi.getAllTypeNews();
+        const blogResponsive = await newsApi.getAllNews()
+        let blogsApi = blogResponsive?.data.map((blog: news) => { return { ...blog, key: blog.News_ID, News_Image: blog.News_Image } })
         if (response?.data) {
           response.data.forEach((item: typeNews) => {
-            let blogList = newsFakeApi.filter(news => news.TypeNews_Name == item.TypeNews_Name)
+            let blogList = blogsApi.filter((news: news) => news.TypeNews_ID == item.TypeNews_ID)
             blogs.push({
               "blogTitle": item.TypeNews_Name,
-              "blogList": blogList
+              "blogList": blogList.map((blog: any) => { return { ...blog, TypeNews_Name: item.TypeNews_Name } })
             })
           })
 
         }
+        console.log({ blogs })
         setBlogsData(blogs)
       } catch (err) {
         console.error('Error fetching data:', err);
@@ -33,6 +39,7 @@ const BlogList = () => {
     fetchData();
   }, [])
   const navigateBlog = (blog: newsRow) => {
+    console.log({ blog })
     navigate(`blogs/${blog.TypeNews_Name}/${blog.News_ID}`)
     window.scrollTo(0, 0);
   }

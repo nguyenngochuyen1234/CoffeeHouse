@@ -1,11 +1,12 @@
+import newsApi from '@/api/newsApi';
 import { newsFakeApi } from '@/api/newsFakeApi';
 import { newsRow } from '@/models';
 import { navigatePageBlog } from '@/utils/page';
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
-export interface blog{
-  typeNews:string
-  idNews:string
+export interface blog {
+  typeNews: string
+  idNews: string
 }
 const BlogDetail = () => {
 
@@ -17,17 +18,30 @@ const BlogDetail = () => {
   let [nextBlog, setNextBlog] = useState<blog | null>()
   const [blog, setBlog] = useState<newsRow>()
   useEffect(() => {
-    let blogData = newsFakeApi.find(item => item.News_ID === idNews && item.TypeNews_Name == typeNews)
-    if(blogData){
-      let {nextBlog, prevBlog} = navigatePageBlog(blogData)
-      setNextBlog(nextBlog)
-      setPrevBlog(prevBlog)
-      setBlog(blogData)
+    const fetchData = async () => {
+      try {
+        if (idNews) {
+          let api = await newsApi.getNews(idNews)
+          console.log({ idNews })
+          if (api.data[0]) {
+            setBlog(api.data[0])
+          }
+        }
+      } catch (error) {
+        console.log({ error })
+      }
     }
-
+    let blogData = newsFakeApi.find(item => item.News_ID === idNews && item.TypeNews_Name == typeNews)
+    if (blogData) {
+      // let {nextBlog, prevBlog} = navigatePageBlog(blogData)
+      // setNextBlog(nextBlog)
+      // setPrevBlog(prevBlog)
+      // setBlog(blogData)
+    }
+    fetchData()
   }, [idNews, typeNews])
   const navigateNextBlog = () => {
-    if(nextBlog){
+    if (nextBlog) {
       navigate(`/blogs/${nextBlog.typeNews}/${nextBlog.idNews}`)
       setIdNews(nextBlog.idNews)
       setTypeNews(nextBlog.typeNews)
@@ -35,7 +49,7 @@ const BlogDetail = () => {
     }
   }
   const navigatePrevBlog = () => {
-    if(prevBlog){
+    if (prevBlog) {
       navigate(`/blogs/${prevBlog.typeNews}/${prevBlog.idNews}`)
       setIdNews(prevBlog.idNews)
       setTypeNews(prevBlog.typeNews)
@@ -57,12 +71,15 @@ const BlogDetail = () => {
             </ol>
           </div>
           <h1 className='my-5 text-[34px] font-[600] '>{blog?.News_Title}</h1>
-          <div dangerouslySetInnerHTML={{ __html: blog?.News_Content || '' }} className="overflow-auto"></div>
-      <div className='flex justify-between py-10 text-[#fff]'>
-        <button className='bg-[#000] text-[18px] w-[200px] font-[500] rounded-none' style={{visibility:prevBlog?'visible' : 'hidden'}} onClick={navigatePrevBlog}>BÀI TRƯỚC</button>
-        <button className='bg-[#000] w-[200px] text-[18px] font-[500] rounded-none' onClick={navigateNextBlog} style={{visibility:nextBlog?'visible' : 'hidden'}} >BÀI KẾ TIẾP</button>
-      </div>
-      <div className='h-[1px] w-[100%] bg-[#000]'></div>
+          <div className="article_content">
+            <div dangerouslySetInnerHTML={{ __html: blog?.News_Content || '' }} className="overflow-auto"></div>
+
+          </div>
+          <div className='flex justify-between py-10 text-[#fff]'>
+            <button className='bg-[#000] text-[18px] w-[200px] font-[500] rounded-none' style={{ visibility: prevBlog ? 'visible' : 'hidden' }} onClick={navigatePrevBlog}>BÀI TRƯỚC</button>
+            <button className='bg-[#000] w-[200px] text-[18px] font-[500] rounded-none' onClick={navigateNextBlog} style={{ visibility: nextBlog ? 'visible' : 'hidden' }} >BÀI KẾ TIẾP</button>
+          </div>
+          <div className='h-[1px] w-[100%] bg-[#000]'></div>
         </div>
       </div>
     </main>

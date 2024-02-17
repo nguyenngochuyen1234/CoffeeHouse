@@ -13,7 +13,7 @@ export interface news {
     News_Title: string;
     News_Image: string;
     News_Content: string;
-    TypeNews_Name: string;
+    TypeNews_ID: number;
     News_Description: string;
 }
 
@@ -24,6 +24,7 @@ export interface newsRow {
     News_Image: string;
     News_Content: string;
     TypeNews_Name: string;
+    TypeNews_ID: string;
     News_Description: string;
     time: string;
 }
