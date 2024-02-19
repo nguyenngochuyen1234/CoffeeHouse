@@ -1,125 +1,98 @@
+
+
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import type { InputRef } from 'antd';
-import { Button, Form, Input, Popconfirm, Table } from 'antd';
+import { Button, Form, Input,Image, Popconfirm, Table } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import { AnyObject } from 'antd/es/_util/type';
-import { DeleteOutlined, EditOutlined,PlusOutlined } from '@ant-design/icons';
-
-import typeNewsApi from '@/api/typeNewsApi';
-import { typeNews } from '@/models';
-import ModalAddTypeNews from '@/components/Admin/modal/ModalAddTypeNews';
-
+import { DeleteOutlined, EditOutlined, PlusOutlined, EyeOutlined } from '@ant-design/icons';
+import productsApi from '@/api/productsApi';
+import { typeProducts, productsRow, products } from '@/models';
+// import { newsFakeApi } from '@/api/newsFakeApi';
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
+import "react-quill/dist/quill.snow.css";
+import ModalProducts from '@/components/Admin/modal/ModalProducts';
+const Product = () => {
 
 
-
-interface EditableRowProps {
-  index: number;
-}
-
-const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
-  const [form] = Form.useForm();
-  return (
-    <Form form={form} component={false}>
-      <EditableContext.Provider value={form}>
-        <tr {...props} />
-      </EditableContext.Provider>
-    </Form>
-  );
-};
-
-interface EditableCellProps {
-  title: React.ReactNode;
-  editable: boolean;
-  children: React.ReactNode;
-
-}
-
-const EditableCell: React.FC<EditableCellProps> = ({
-  title,
-  editable,
-  children,
-
-  ...restProps
-}) => {
-  const [editing, setEditing] = useState(false);
-  const inputRef = useRef<InputRef>(null);
-  const form = useContext(EditableContext)!;
-
-  useEffect(() => {
-    if (editing) {
-      inputRef.current!.focus();
-    }
-  }, [editing]);
-
-
-  const save = async () => {
-    try {
-      const values = await form.validateFields();
-
-    } catch (errInfo) {
-      console.log('Save failed:', errInfo);
-    }
-  };
-
-  let childNode = children;
-
-  if (editable) {
-    childNode = editing ? (
-      <Form.Item
-        style={{ margin: 0 }}
-        rules={[
-          {
-            required: true,
-            message: `${title} is required.`,
-          },
-        ]}
-      >
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-      </Form.Item>
-    ) : (
-      <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }}>
-        {children}
-      </div>
-    );
+  interface EditableRowProps {
+    index: number;
   }
 
-  return <td {...restProps}>{childNode}</td>;
-};
+  const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
+    const [form] = Form.useForm();
+    return (
+      <Form form={form} component={false}>
+        <EditableContext.Provider value={form}>
+          <tr {...props} />
+        </EditableContext.Provider>
+      </Form>
+    );
+  };
 
-type EditableTableProps = Parameters<typeof Table>[0];
+  interface EditableCellProps {
+    title: React.ReactNode;
+    editable: boolean;
+    children: React.ReactNode;
 
-interface DataType {
-  key: number;
-  Product_ID: string;
-  TypeProduct_ID: string;
-  Product_Name: string;
-  Product_Image: string;
-  Product_Price: Number;
-  Product_Description: String;
-}
+  }
+
+  const EditableCell: React.FC<EditableCellProps> = ({
+    title,
+    editable,
+    children,
+
+    ...restProps
+  }) => {
+    const inputRef = useRef<InputRef>(null);
+    const form = useContext(EditableContext)!;
 
 
-type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
+    const save = async () => {
+      try {
+        const values = await form.validateFields();
+      } catch (errInfo) {
+        console.log('Save failed:', errInfo);
+      }
+    };
 
-const Product: React.FC = () => {
-  const [dataSource, setDataSource] = useState<DataType[]>([]);
+    let childNode = children;
+
+    return <td {...restProps}>{childNode}</td>;
+  };
+
+  type EditableTableProps = Parameters<typeof Table>[0];
+
+  interface DataType {
+    key: number;
+    Product_ID: string;
+    Product_Name: string;
+    Product_Image: string;
+    Product_Price: string;
+    TypeProduct_ID: number;
+    Product_Description: string;
+  }
+
+
+  type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
+
+  const [dataSource, setDataSource] = useState<productsRow[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [dataRow, setDataRow] = useState<AnyObject | null>(null);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await typeNewsApi.getAllTypeNews();
-        if(response?.data){
-          let dt = response.data.map((item:typeNews)=>{
-            return{
-              key:item.TypeNews_ID,
+        const response = await productsApi.getAllProduct();
+        if (response?.data) {
+          let dt = response.data.map((item: products) => {
+            return {
+              key: item.idProduct,
               ...item
             }
           })
-          console.log({dt})
           setDataSource(dt)
         }
-        console.log({response})
+        console.log({ response })
       } catch (err) {
         console.error('Error fetching data:', err);
       }
@@ -128,25 +101,56 @@ const Product: React.FC = () => {
     fetchData();
   }, [])
 
-  const handleDelete = async(key: number) => {
-    try{
+  const handleEdit = (record: AnyObject) => {
+    setDataRow(record)
+    setIsModalOpen(true)
+  }
+
+  const handleDelete = async (key: number) => {
+    try {
       const newData = dataSource.filter((item) => item.key !== key);
       setDataSource(newData);
-      await typeNewsApi.deleteTypeNews(key)
-    }catch(err){
+      await productsApi.deleteProduct(key)
+    } catch (err) {
       console.error(err)
     }
   };
 
   const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
     {
-      title: 'ID',
-      dataIndex: 'TypeNews_ID',
+      title: 'Loại sản phẩm',
+      dataIndex: 'TypeProduct_Name',
       width: '150px',
     },
     {
-      title: 'Tên loại tin tức',
-      dataIndex: 'TypeNews_Name',
+      title: 'ID',
+      dataIndex: 'Product_ID',
+      width: '150px',
+    },
+    {
+      title: 'Tên sản phẩm',
+      dataIndex: 'Product_Name',
+      width: '150px',
+    },
+    {
+      title: 'Giá sản phẩm',
+      dataIndex: 'Product_Price',
+      width: '150px',
+    },
+    {
+      title: 'Ảnh sản phẩm',
+      dataIndex: 'Product_Image',
+      width: '150px',
+      render:(_, record: AnyObject) => 
+      <Image
+      width={200}
+      src={record.Product_Image}
+    />
+    },
+    {
+      title: 'Mô tả',
+      dataIndex: 'Product_Description',
+      width: '500px',
     },
     {
       title: 'Hành động',
@@ -158,21 +162,15 @@ const Product: React.FC = () => {
             <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
               <DeleteOutlined className='text-[red] text-[18px]' />
             </Popconfirm>
-            <EditOutlined className='text-[18px] text-[#1677ff] cursor-pointer' />
+            <EditOutlined onClick={() => handleEdit(record)} className='text-[18px] text-[#1677ff] cursor-pointer' />
           </div>
         ) : null,
     },
   ];
 
   const handleAdd = () => {
-    // const newData: DataType = {
-    //   key: count,
-    //   name: `Edward King ${count}`,
-    //   age: '32',
-    //   address: `London, Park Lane no. ${count}`,
-    // };
-    // setDataSource([...dataSource, newData]);
-    // setCount(count + 1);
+    setDataRow({})
+    setIsModalOpen(true)
   };
 
   const handleSave = (row: DataType) => {
@@ -209,23 +207,30 @@ const Product: React.FC = () => {
     };
   });
 
-  return (
-    <div>
-      {/* <ModalAddTypeNews isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/> */}
-      <Button className='my-4 absolute top-[1px]' type="primary" icon={<PlusOutlined />} onClick={()=>setIsModalOpen(true)} >
-        Thêm sản phẩm
-      </Button>
-      <Table
-        className='mt-2'
-        components={components}
-        rowClassName={() => 'editable-row'}
-        bordered
-        dataSource={dataSource}
-        columns={columns as ColumnTypes}
-      />
-    </div>
-  );
-};
 
-export default Product;
+
+  return (
+
+      <div>
+        <ModalProducts isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setDataSource={setDataSource} dataRow={dataRow} />
+        <Button className='my-4 absolute top-[1px]' type="primary" icon={<PlusOutlined />} onClick={handleAdd} >
+          Tạo mới
+        </Button>
+        <Table
+          className='mt-3'
+          components={components}
+          rowClassName={() => 'editable-row'}
+          bordered
+          dataSource={dataSource}
+          columns={columns as ColumnTypes}
+
+        />
+    </div>
+
+  )
+}
+
+export default Product
+
+
 
