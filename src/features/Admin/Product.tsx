@@ -78,8 +78,6 @@ const Product = () => {
 
   const [dataSource, setDataSource] = useState<productsRow[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModalReviewOpen, setIsModalReviewOpen] = useState(false);
-  const [contentRow, setContentRow] = useState<productsRow | null>(null)
   const [dataRow, setDataRow] = useState<AnyObject | null>(null);
   useEffect(() => {
     const fetchData = async () => {

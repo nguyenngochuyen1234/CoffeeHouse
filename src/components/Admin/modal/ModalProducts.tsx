@@ -110,11 +110,11 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
                 ...values,
                 Product_Image:ProductsImage,
             }
-            // await productsApi.addProduct(data)
+            await productsApi.addProduct(data)
             console.log("Data:", { data })
             if (!dataRow?.TypeProduct_Name) {
                 // add
-                let response = await productsApi.addProduct(data)
+                let response = await productsApi.addProduct(values)
                 let data:ProductsApiResponse = response.data
                 setDataSource((prev: productsRow[]) => [...prev, {
                   key: data.id,
@@ -212,23 +212,13 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
                     </Form.Item>
 
                     <Form.Item
-                        {...{
-                            labelCol: { span: 3 },
-                            wrapperCol: { span: 25 }
-                        }}
-                        className='w-[100%]'
+                        {...formItemLayout}
                         name="Product_Description"
                         label="Mô tả"
+
                         rules={[{ required: true, message: 'Vui lòng nhập' }]}
                     >
-                        <ReactQuill
-                            theme={"snow"}
-                            onChange={onChangeValue}
-                            value={dataNews}
-                            modules={modules()}
-                            formats={formats}
-                            bounds={".post"}
-                        />
+                        <Input placeholder="Nhập mô tả" />
                     </Form.Item>
 
                 </Form>
