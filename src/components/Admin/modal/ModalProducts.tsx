@@ -10,22 +10,6 @@ import productsApi from '@/api/productsApi';
 interface ProductsApiResponse { 
     id: number;
 }
-const modules = () => ({
-    toolbar: [
-        [{ 'header': '1' }, { 'header': '2' }],
-        [{ size: [] }],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' },
-        { 'indent': '-1' }, { 'indent': '+1' }],
-        [{ 'color': [] }, { 'background': [] }],
-        [{ 'align': [] }],
-        ['link', 'image', 'video']
-    ],
-    clipboard: {
-        // toggle to add extra line breaks when pasting HTML:
-        matchVisual: false,
-    }
-});
 export interface ModalProductsProps {
     isModalOpen: boolean
     setIsModalOpen: (newValue: boolean) => void
@@ -55,19 +39,8 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [form] = Form.useForm();
     const [checkNick, setCheckNick] = useState(false);
-    const [dataNews, setDataNews] = useState("")
     const [typeProducts, settypeProducts] = useState<typeProducts[]>([])
-    const onChangeValue = (value: string) => {
-        setDataNews(value)
-
-    };
     
-    const formats = [
-        'header', 'size',
-        'bold', 'italic', 'underline', 'strike', 'blockquote',
-        'list', 'bullet', 'indent', 'color', 'background', 'align',
-        'link', 'image', 'video'
-    ];
 
     useEffect(() => {
         form.validateFields(['nickname']);
@@ -106,30 +79,29 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
     const onCheck = async () => {
         try {
             const values = await form.validateFields();
-            let data = {
+            let dt = {
                 ...values,
                 Product_Image:ProductsImage,
             }
-            await productsApi.addProduct(data)
-            console.log("Data:", { data })
-            if (!dataRow?.TypeProduct_Name) {
+            // await productsApi.addProduct(dt)
+            // console.log("Data:", { data })
+            if (!dataRow?.Product_ID) {
                 // add
-                let response = await productsApi.addProduct(values)
+                let response = await productsApi.addProduct(dt)
                 let data:ProductsApiResponse = response.data
                 setDataSource((prev: productsRow[]) => [...prev, {
                   key: data.id,
-                  idProduct: data.id.toString(),
+                  idProduct: dt.id.toString(),
                   Product_Name: values.Product_Name,
                   Product_Image: values.Product_Image,
                   Product_Price: values.Product_Price,
                   TypeProduct_ID: values.TypeProduct_ID,
                   Product_Description: values.Product_Description,
                 }])
-
             } else {
                 let id = dataRow.Product_ID
                 let updateRow = {
-                    idProduct: data.id.toString(),
+                    idProduct: dt.id.toString(),
                     Product_Name: values.Product_Name,
                     Product_Image: values.Product_Image,
                     Product_Price: values.Product_Price,
@@ -156,7 +128,7 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
     return (
         <>
             <Modal
-                title={!dataRow?.TypeProduct_Name ? "Thêm sản phẩm" : "Sửa sản phẩm"}
+                title={!dataRow?.Product_Name ? "Thêm sản phẩm" : "Sửa sản phẩm"}
                 open={isModalOpen}
                 onOk={onCheck}
                 confirmLoading={confirmLoading}
@@ -195,7 +167,7 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
 
                         rules={[{ required: true, message: 'Vui lòng nhập' }]}
                     >
-                        <Input placeholder="Nhập giá bán" />
+                        <Input type='number' placeholder="Nhập giá bán" />
                     </Form.Item>
 
                     <Form.Item
