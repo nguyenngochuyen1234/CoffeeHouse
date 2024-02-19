@@ -7,12 +7,13 @@ import type { FormInstance } from 'antd/es/form';
 import { AnyObject } from 'antd/es/_util/type';
 import { DeleteOutlined, EditOutlined, PlusOutlined, EyeOutlined } from '@ant-design/icons';
 import typeNewsApi from '@/api/typeNewsApi';
-import { typeNews, newsRow } from '@/models';
+import { typeNews, newsRow, news } from '@/models';
 import ModalNews from '@/components/Admin/modal/ModalNews';
 import { newsFakeApi } from '@/api/newsFakeApi';
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 import "react-quill/dist/quill.snow.css";
 import ModalReviewNews from '@/components/Admin/modal/ModalReviewNews';
+import newsApi from '@/api/newsApi';
 const News = () => {
 
 
@@ -74,7 +75,7 @@ const News = () => {
 
   type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 
-  const [dataSource, setDataSource] = useState<newsRow[]>(newsFakeApi);
+  const [dataSource, setDataSource] = useState<newsRow[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalReviewOpen, setIsModalReviewOpen] = useState(false);
   const [contentRow, setContentRow] = useState<newsRow | null>(null)
@@ -82,17 +83,17 @@ const News = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // const response = await typeNewsApi.getAllTypeNews();
-        // if (response?.data) {
-        //   let dt = response.data.map((item: typeNews) => {
-        //     return {
-        //       key: item.TypeNews_ID,
-        //       ...item
-        //     }
-        //   })
-        //   setDataSource(dt)
-        // }
-        // console.log({ response })
+        const response = await newsApi.getAllNews();
+        if (response?.data) {
+          let dt = response.data.map((item: news) => {
+            return {
+              key: item.News_ID,
+              ...item
+            }
+          })
+          setDataSource(dt)
+        }
+        console.log({ response })
       } catch (err) {
         console.error('Error fetching data:', err);
       }
@@ -106,11 +107,11 @@ const News = () => {
     setIsModalOpen(true)
   }
 
-  const handleDelete = async (key: number) => {
+  const handleDelete = async (key: string) => {
     try {
-      // const newData = dataSource.filter((item) => item.key !== key);
-      // setDataSource(newData);
-      // await typeNewsApi.deleteTypeNews(key)
+      const newData = dataSource.filter((item) => item.key !== key);
+      setDataSource(newData);
+      await newsApi.deleteNews(key)
     } catch (err) {
       console.error(err)
     }

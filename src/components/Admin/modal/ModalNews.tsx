@@ -5,12 +5,9 @@ import typeNewsApi from '@/api/typeNewsApi';
 import ReactQuill from "react-quill";
 import { newsRow, typeNews } from '@/models';
 import { AnyObject } from 'antd/es/_util/type';
-import { convertString } from '@/utils/paragraph';
 import newsApi from '@/api/newsApi';
 
-interface NewsApiResponse {
-    id: number;
-}
+
 const modules = () => ({
     toolbar: [
         [{ 'header': '1' }, { 'header': '2' }],
@@ -41,6 +38,7 @@ const formItemLayout = {
 const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setDataSource, dataRow }) => {
     const [NewsImage, setNewsImage] = useState('')
     const props = {
+
         action: 'http://localhost:8800/api/upload',
         onChange(info: any) {
             if (info.file.status !== 'uploading') {
@@ -75,6 +73,8 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
 
     useEffect(() => {
         if (dataRow) {
+            setDataNews(dataRow.News_Content)
+            setNewsImage(dataRow.News_Image)
             form.setFieldsValue({
                 TypeNews_Name: dataRow.TypeNews_Name || '',
             });
@@ -109,31 +109,14 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
             const values = await form.validateFields();
             let data = {
                 ...values,
-                News_Image:NewsImage,
+                News_Image: NewsImage,
             }
-            await newsApi.AddNews(data)
-            console.log({ data })
-            if (!dataRow?.TypeNews_Name) {
-                //add
-                // let response = await typeNewsApi.News(values)
-                // let data:TypeNewsApiResponse = response.data
-                // setDataSource((prev: newsRow[]) => [...prev, {
-                //   key: data.id,
-                //   TypeNews_ID: data.id.toString(),
-                //   TypeNews_Name: values.TypeNews_Name,
-                // }])
-            } else {
-                let id = dataRow.TypeNews_ID
-                let updateRow = {
-                    TypeNews_ID: id,
-                    TypeNews_Name: values.TypeNews_Name,
+            if(dataRow?.News_ID){
+                console.log({data})
+            }else{
+                await newsApi.AddNews(data)
+            }
 
-                }
-                // await typeNewsApi.UpdateTypeNews(updateRow)
-                // setDataSource((prev: newsRow[]) => prev.map(row=>row.TypeNews_ID === id ? {
-                //   ...updateRow, key:id
-                // } : row))
-            }
             setIsModalOpen(false)
         } catch (errorInfo) {
             console.log('Failed:', errorInfo);
@@ -149,14 +132,14 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
     return (
         <>
             <Modal
-                title={!dataRow?.TypeNews_Name ? "Thêm tin tức" : "Sửa tin tức"}
+                title={!dataRow?.News_ID ? "Thêm tin tức" : "Sửa tin tức"}
                 open={isModalOpen}
                 onOk={onCheck}
                 confirmLoading={confirmLoading}
                 onCancel={handleCancel}
                 width={800}
             >
-                <Form form={form} initialValues={{ TypeNews_Name: dataRow?.TypeNews_Name || '' }} name="dynamic_rule" style={{ maxWidth: 800 }}>
+                <Form form={form} initialValues={{ News_Title: dataRow?.News_Title || '', TypeNews_Name:1, News_Description: dataRow?.News_Description || '', News_Content: dataRow?.News_Content || '', }} name="dynamic_rule" style={{ maxWidth: 800 }}>
 
 
                     <Form.Item
@@ -166,7 +149,7 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
                         rules={[{ required: true, message: 'Vui lòng nhập' }]}
                     >
                         <Select>
-                            {typeNews?.map(item => <Select.Option value={item.TypeNews_ID}>{item.TypeNews_Name}</Select.Option>)}
+                            {typeNews?.map(item => <Select.Option key={item.TypeNews_ID} value={item.TypeNews_ID}>{item.TypeNews_Name}</Select.Option>)}
 
                         </Select>
                     </Form.Item>
@@ -201,7 +184,12 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
                         getValueFromEvent={normFile}
                         rules={[{ required: true, message: 'Vui lòng nhập' }]}
                     >
-                        <Upload listType="picture" name='image' maxCount={1} {...props}>
+                        <Upload listType="picture" name='image' defaultFileList={[{
+                            uid: '-1',
+                            name: 'image.png',
+                            status: 'done',
+                            url: dataRow?.News_Image || '',
+                        }]} maxCount={1} {...props}>
                             <Button icon={<UploadOutlined />}>Click to upload</Button>
                         </Upload>
                     </Form.Item>

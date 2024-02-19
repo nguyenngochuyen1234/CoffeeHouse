@@ -22,6 +22,7 @@ const BlogDetail = () => {
       try {
         if (idNews) {
           let api = await newsApi.getNews(idNews)
+          let allNewsApi = await newsApi.getAllNews()
           console.log({ idNews })
           if (api.data[0]) {
             setBlog(api.data[0])
@@ -31,13 +32,13 @@ const BlogDetail = () => {
         console.log({ error })
       }
     }
-    let blogData = newsFakeApi.find(item => item.News_ID === idNews && item.TypeNews_Name == typeNews)
-    if (blogData) {
+    // let blogData = newsFakeApi.find(item => item.News_ID === idNews && item.TypeNews_Name == typeNews)
+    // if (blogData) {
       // let {nextBlog, prevBlog} = navigatePageBlog(blogData)
       // setNextBlog(nextBlog)
       // setPrevBlog(prevBlog)
       // setBlog(blogData)
-    }
+    // }
     fetchData()
   }, [idNews, typeNews])
   const navigateNextBlog = () => {

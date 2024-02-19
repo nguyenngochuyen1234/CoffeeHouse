@@ -12,6 +12,11 @@ const newsApi={
   getNews(id:string) {
     const url = `api/news/getNews/${id}`
     return axiosClient.get(url)
+  },
+  deleteNews(id:string){
+    const url = `api/news/${id}`
+    return axiosClient.delete(url)
+
   }
 }
 export default newsApi

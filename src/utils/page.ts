@@ -10,11 +10,11 @@ export const navigatePageBlog = (blog: newsRow ) => {
     return {
         prevBlog: prevBlog ? {
             idNews: prevBlog.News_ID,
-            typeNews: prevBlog.TypeNews_Name
+            typeNews: prevBlog.TypeNews_ID
         } : null,
         nextBlog: nextBlog ? {
             idNews: nextBlog.News_ID,
-            typeNews: nextBlog.TypeNews_Name
+            typeNews: nextBlog.TypeNews_ID
         } : null,
     }
 }
