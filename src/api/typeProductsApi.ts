@@ -8,7 +8,7 @@ const typeProductsApi={
   addTypeProduct(data:typeProducts){
     const url="api/typeProduct"
     return axiosClient.post(url, data)
-  },
+  }, 
   updateTypeProduct(data:typeProducts){
     const url=`api/typeProduct`
     return axiosClient.put(url, data)

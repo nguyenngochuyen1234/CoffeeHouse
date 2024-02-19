@@ -74,7 +74,7 @@ const News = () => {
 
   type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 
-  const [dataSource, setDataSource] = useState<newsRow[]>(newsFakeApi);
+  const [dataSource, setDataSource] = useState<newsRow[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalReviewOpen, setIsModalReviewOpen] = useState(false);
   const [contentRow, setContentRow] = useState<newsRow | null>(null)

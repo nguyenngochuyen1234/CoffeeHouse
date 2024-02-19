@@ -14,8 +14,8 @@ export interface ModalTypeProductsProps {
   dataRow: AnyObject | null
 }
 const formItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 20 },
+  labelCol: { span: 7 },
+  wrapperCol: { span: 20 }, 
 };
 
 const ModalTypeProducts: React.FC<ModalTypeProductsProps> = ({ isModalOpen, setIsModalOpen, setDataSource, dataRow }) => {
@@ -76,7 +76,7 @@ const ModalTypeProducts: React.FC<ModalTypeProductsProps> = ({ isModalOpen, setI
   return (
     <>
       <Modal
-        title={!dataRow?.TypeProduct_Name ?"Thêm loại tin tức":"Sửa loại tin tức"}
+        title={!dataRow?.TypeProduct_Name ?"Thêm loại sản phẩm":"Sửa loại sản phẩm"}
         open={isModalOpen}
         onOk={onCheck}
         confirmLoading={confirmLoading}
@@ -86,13 +86,21 @@ const ModalTypeProducts: React.FC<ModalTypeProductsProps> = ({ isModalOpen, setI
           <Form.Item
             {...formItemLayout}
             name="TypeProduct_Name"
-            label="Tên loại tin tức"
+            label="Tên loại sản phẩm"
             
             rules={[{ required: true, message: 'Vui lòng nhập' }]}
           >
-            <Input placeholder="Nhập tên loại tin tức" />
+            <Input placeholder="Nhập tên loại sản phẩm" />
           </Form.Item>
-          
+          <Form.Item
+            {...formItemLayout}
+            name="TypeProduct_Img"
+            label="Link ảnh"
+            
+            rules={[{ required: true, message: 'Vui lòng nhập' }]}
+          >
+            <Input placeholder="Nhập link ảnh" />
+          </Form.Item>
         </Form>
       </Modal>
     </>

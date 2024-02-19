@@ -6,7 +6,7 @@ import { AnyObject } from 'antd/es/_util/type';
 
 interface TypeNewsApiResponse {
   id: number;
-}
+} 
 export interface ModalAddTypeNewsProps {
   isModalOpen: boolean
   setIsModalOpen: (newValue: boolean) => void
@@ -92,7 +92,7 @@ const ModalAddTypeNews: React.FC<ModalAddTypeNewsProps> = ({ isModalOpen, setIsM
             <Input placeholder="Nhập tên loại tin tức" />
           </Form.Item>
           
-        </Form>
+        </Form> 
       </Modal>
     </>
   );

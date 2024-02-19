@@ -12,7 +12,7 @@ export interface typeProductsRows {
 }
 
 export interface products {
-  Product_ID: string;
+  idProduct: string;
   Product_Name: string;
   Product_Image: string;
   Product_Price: string; 
@@ -21,11 +21,11 @@ export interface products {
 }
 
 export interface productsRow {
-  key: string;
-  Product_ID: string;
+  key: number;
+  idProduct: string;
   Product_Name: string;
   Product_Image: string;
   Product_Price: string;
-  TypeProduct_ID: string;
+  TypeProduct_ID: number;
   Product_Description: string;
 }

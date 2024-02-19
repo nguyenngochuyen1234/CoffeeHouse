@@ -12,7 +12,7 @@ const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
 
 
-interface EditableRowProps {
+interface EditableRowProps { 
   index: number;
 }
 
