@@ -10,22 +10,6 @@ import productsApi from '@/api/productsApi';
 interface ProductsApiResponse { 
     id: number;
 }
-const modules = () => ({
-    toolbar: [
-        [{ 'header': '1' }, { 'header': '2' }],
-        [{ size: [] }],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' },
-        { 'indent': '-1' }, { 'indent': '+1' }],
-        [{ 'color': [] }, { 'background': [] }],
-        [{ 'align': [] }],
-        ['link', 'image', 'video']
-    ],
-    clipboard: {
-        // toggle to add extra line breaks when pasting HTML:
-        matchVisual: false,
-    }
-});
 export interface ModalProductsProps {
     isModalOpen: boolean
     setIsModalOpen: (newValue: boolean) => void
@@ -55,19 +39,8 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [form] = Form.useForm();
     const [checkNick, setCheckNick] = useState(false);
-    const [dataNews, setDataNews] = useState("")
     const [typeProducts, settypeProducts] = useState<typeProducts[]>([])
-    const onChangeValue = (value: string) => {
-        setDataNews(value)
-
-    };
     
-    const formats = [
-        'header', 'size',
-        'bold', 'italic', 'underline', 'strike', 'blockquote',
-        'list', 'bullet', 'indent', 'color', 'background', 'align',
-        'link', 'image', 'video'
-    ];
 
     useEffect(() => {
         form.validateFields(['nickname']);
@@ -155,7 +128,7 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
     return (
         <>
             <Modal
-                title={!dataRow?.TypeProduct_Name ? "Thêm sản phẩm" : "Sửa sản phẩm"}
+                title={!dataRow?.Product_Name ? "Thêm sản phẩm" : "Sửa sản phẩm"}
                 open={isModalOpen}
                 onOk={onCheck}
                 confirmLoading={confirmLoading}
@@ -194,7 +167,7 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
 
                         rules={[{ required: true, message: 'Vui lòng nhập' }]}
                     >
-                        <Input placeholder="Nhập giá bán" />
+                        <Input type='number' placeholder="Nhập giá bán" />
                     </Form.Item>
 
                     <Form.Item

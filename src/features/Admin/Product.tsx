@@ -143,7 +143,7 @@ const Product = () => {
       width: '150px',
       render:(_:any, record: AnyObject) => 
       <Image
-      width={200}
+      width={90}
       src={record.Product_Image}
     />
     },
@@ -165,7 +165,7 @@ const Product = () => {
             <EditOutlined onClick={() => handleEdit(record)} className='text-[18px] text-[#1677ff] cursor-pointer' />
           </div>
         ) : null,
-    },
+    },  
   ];
 
   const handleAdd = () => {
