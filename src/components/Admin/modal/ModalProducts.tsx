@@ -106,41 +106,40 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
     const onCheck = async () => {
         try {
             const values = await form.validateFields();
-            let data = {
+            const dataProduct = {
                 ...values,
                 Product_Image:ProductsImage,
             }
-            await productsApi.addProduct(data)
-            console.log("Data:", { data })
-            if (!dataRow?.TypeProduct_Name) {
-                // add
-                let response = await productsApi.addProduct(values)
-                let data:ProductsApiResponse = response.data
-                setDataSource((prev: productsRow[]) => [...prev, {
-                  key: data.id,
-                  idProduct: data.id.toString(),
-                  Product_Name: values.Product_Name,
-                  Product_Image: values.Product_Image,
-                  Product_Price: values.Product_Price,
-                  TypeProduct_ID: values.TypeProduct_ID,
-                  Product_Description: values.Product_Description,
-                }])
+            await productsApi.addProduct(dataProduct)
+            // if (!dataRow?.TypeProduct_Name) {
+            //     // add
+            //     let response = await productsApi.addProduct(data)
+            //     let data:ProductsApiResponse = response.data
+            //     setDataSource((prev: productsRow[]) => [...prev, {
+            //       key: data.id,
+            //       idProduct: data.id.toString(),
+            //       Product_Name: values.Product_Name,
+            //       Product_Image: values.Product_Image,
+            //       Product_Price: values.Product_Price,
+            //       TypeProduct_ID: values.TypeProduct_ID,
+            //       Product_Description: values.Product_Description,
+            //     }])
 
-            } else {
-                let id = dataRow.Product_ID
-                let updateRow = {
-                    idProduct: data.id.toString(),
-                    Product_Name: values.Product_Name,
-                    Product_Image: values.Product_Image,
-                    Product_Price: values.Product_Price,
-                    TypeProduct_ID: values.TypeProduct_ID,
-                    Product_Description: values.Product_Description,
-                }
-                await productsApi.updateProduct(updateRow)
-                setDataSource((prev: productsRow[]) => prev.map(row=>row.idProduct === id ? {
-                  ...updateRow, key:id
-                } : row))
-            }
+            // } else {
+            //     let id = dataRow.Product_ID
+            //     let updateRow = {
+            //         idProduct: data.id.toString(),
+            //         Product_Name: values.Product_Name,
+            //         Product_Image: values.Product_Image,
+            //         Product_Price: values.Product_Price,
+            //         TypeProduct_ID: values.TypeProduct_ID,
+            //         Product_Description: values.Product_Description,
+            //     }
+            //     await productsApi.updateProduct(updateRow)
+            //     setDataSource((prev: productsRow[]) => prev.map(row=>row.idProduct === id ? {
+            //       ...updateRow, key:id
+            //     } : row))
+            // }
             setIsModalOpen(false)
         } catch (errorInfo) {
             console.log('Failed:', errorInfo);

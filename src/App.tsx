@@ -8,12 +8,14 @@ import Product from "./features/Admin/Product";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import BlogDetail from "./pages/BlogDetail";
 import BodyHome from "./pages/BodyHome";
+import Blogs from "./pages/Blogs";
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />}>
         <Route index element={<BodyHome />} />
         <Route path="blogs/:typeNews/:idNews" element={<BlogDetail />} />
+        <Route path="blogs/:typeNews" element={<Blogs />} />
       </Route>
       <Route path="/admin" element={<Admin />}>
         <Route path='typeProduct' element={<TypeProduct />} />

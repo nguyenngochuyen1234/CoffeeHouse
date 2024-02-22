@@ -5,7 +5,7 @@ import { typeProductsRows } from '@/models';
 import { AnyObject } from 'antd/es/_util/type';
 
 interface TypeProductsApiResponse {
-  id: number;
+  id: string;
 }
 export interface ModalTypeProductsProps {
   isModalOpen: boolean

@@ -64,12 +64,12 @@ const Product = () => {
   type EditableTableProps = Parameters<typeof Table>[0];
 
   interface DataType {
-    key: number;
+    key: string;
     Product_ID: string;
     Product_Name: string;
     Product_Image: string;
-    Product_Price: string;
-    TypeProduct_ID: number;
+    Product_Price: number;
+    TypeProduct_ID: string;
     Product_Description: string;
   }
 
@@ -106,7 +106,7 @@ const Product = () => {
     setIsModalOpen(true)
   }
 
-  const handleDelete = async (key: number) => {
+  const handleDelete = async (key: string) => {
     try {
       const newData = dataSource.filter((item) => item.key !== key);
       setDataSource(newData);
@@ -141,7 +141,7 @@ const Product = () => {
       title: 'Ảnh sản phẩm',
       dataIndex: 'Product_Image',
       width: '150px',
-      render:(_, record: AnyObject) => 
+      render:(_:any, record: AnyObject) => 
       <Image
       width={200}
       src={record.Product_Image}
@@ -206,9 +206,6 @@ const Product = () => {
       }),
     };
   });
-
-
-
   return (
 
       <div>

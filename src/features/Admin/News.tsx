@@ -213,7 +213,7 @@ const News = () => {
   return (
 
       <div>
-        <ModalNews isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setDataSource={setDataSource} dataRow={dataRow} />
+        <ModalNews isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setDataSource={setDataSource} dataRow={dataRow} dataSource={dataSource}/>
         <ModalReviewNews isModalReviewOpen={isModalReviewOpen} setIsModalReviewOpen={setIsModalReviewOpen} contentRow={contentRow} />
         <Button className='my-4 absolute top-[1px]' type="primary" icon={<PlusOutlined />} onClick={handleAdd} >
           Tạo mới

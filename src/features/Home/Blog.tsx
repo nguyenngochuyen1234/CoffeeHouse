@@ -1,4 +1,3 @@
-import Test from '@/api/Test';
 import newsApi from '@/api/newsApi';
 import { newsFakeApi } from '@/api/newsFakeApi';
 import typeNewsApi from '@/api/typeNewsApi';
@@ -18,18 +17,17 @@ const BlogList = () => {
         let blogs: blogsData[] = []
         const response = await typeNewsApi.getAllTypeNews();
         const blogResponsive = await newsApi.getAllNews()
-        let blogsApi = blogResponsive?.data.map((blog: news) => { return { ...blog, key: blog.News_ID, News_Image: blog.News_Image } })
+        let blogsApi = blogResponsive?.data.map((blog: news) => { return { ...blog, key: blog.News_ID } })
         if (response?.data) {
           response.data.forEach((item: typeNews) => {
             let blogList = blogsApi.filter((news: news) => news.TypeNews_ID == item.TypeNews_ID)
             blogs.push({
               "blogTitle": item.TypeNews_Name,
-              "blogList": blogList.map((blog: any) => { return { ...blog, TypeNews_Name: item.TypeNews_Name } })
+              "blogList": blogList.map((blog: any) => { return { ...blog, TypeNews_Name: item.TypeNews_Name } }).slice(0, 3)
             })
           })
 
         }
-        console.log({ blogs })
         setBlogsData(blogs)
       } catch (err) {
         console.error('Error fetching data:', err);
@@ -39,8 +37,11 @@ const BlogList = () => {
     fetchData();
   }, [])
   const navigateBlog = (blog: newsRow) => {
-    console.log({ blog })
     navigate(`blogs/${blog.TypeNews_Name}/${blog.News_ID}`)
+    window.scrollTo(0, 0);
+  }
+  const navigateBlogs = (blogTitle: string) => {
+    navigate(`blogs/${blogTitle}`)
     window.scrollTo(0, 0);
   }
   return (
@@ -49,7 +50,7 @@ const BlogList = () => {
         blogsData.map((blog, idx) => {
           return (
             <div className="mx-auto px-4" key={idx}>
-              <h3 className="blog_home_blogtitle">{blog.blogTitle}</h3>
+              <h3 onClick={()=>navigateBlogs(blog.blogTitle)} className="blog_home_blogtitle">{blog.blogTitle}</h3>
               <div className="flex flex-wrap">
                 {
                   blog.blogList.map(blogItem => <div key={blogItem.News_ID} className="blog_item" onClick={() => { navigateBlog(blogItem) }}>
@@ -81,7 +82,7 @@ const Blog = () => {
     <div className='w-[100%] bg-[#FFF7E6] pb-[150px]'>
       <div className="flex justify-center items-center pt-10">
         <img src="https://file.hstatic.net/1000075078/file/coffee-2_2_92db24958ff14ac4b4249b3256f7a415.png" alt="" />
-        <h1 className="text-[28px] font-[600]">Chuyện nhà</h1>
+        <h1 className="text-[28px] font-[600] ml-2">Chuyện nhà</h1>
       </div>
       <BlogList />
 

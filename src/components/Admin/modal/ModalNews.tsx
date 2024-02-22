@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Select, Modal, Form, Input, Upload, Button, message, Row } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { ControlOutlined, UploadOutlined } from '@ant-design/icons';
 import typeNewsApi from '@/api/typeNewsApi';
 import ReactQuill from "react-quill";
 import { newsRow, typeNews } from '@/models';
@@ -29,13 +29,14 @@ export interface ModalNewsProps {
     setIsModalOpen: (newValue: boolean) => void
     setDataSource: React.Dispatch<React.SetStateAction<newsRow[]>>
     dataRow: AnyObject | null
+    dataSource: newsRow[]
 }
 const formItemLayout = {
     labelCol: { span: 3 },
     wrapperCol: { span: 25 },
 };
 
-const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setDataSource, dataRow }) => {
+const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setDataSource, dataRow, dataSource }) => {
     const [NewsImage, setNewsImage] = useState('')
     const props = {
 
@@ -77,9 +78,16 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
             setNewsImage(dataRow.News_Image)
             form.setFieldsValue({
                 TypeNews_Name: dataRow.TypeNews_Name || '',
+                News_Title: dataRow?.News_Title || '', News_Description: dataRow?.News_Description || '', News_Content: dataRow?.News_Content || '', News_Image: [{
+                    uid: '-1',
+                    name: 'image.png',
+                    status: 'done',
+                    url: dataRow?.News_Image || '',
+                }]
+
             });
         }
-    }, [dataRow, form]);
+    }, [dataRow, form, dataRow?.News_ID]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -109,12 +117,26 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
             const values = await form.validateFields();
             let data = {
                 ...values,
-                News_Image: NewsImage,
+                News_Image: `http://localhost:8800/uploads/${NewsImage}`,
             }
-            if(dataRow?.News_ID){
-                console.log({data})
-            }else{
-                await newsApi.AddNews(data)
+            if (dataRow?.News_ID) {
+                let dataUpdate = {
+                    ...values,
+                    News_Image: NewsImage,
+                    News_ID: dataRow?.News_ID,
+                    TypeNews_ID: dataRow?.TypeNews_ID
+                }
+                let response = await newsApi.updateNews(dataUpdate)
+                if (response.data) {
+                    let dataUpdateRes = response.data
+                    let newData = dataSource.map(row => row.News_ID === dataUpdateRes.News_ID ? {
+                        ...dataUpdateRes,
+                        key: dataUpdateRes.News_ID
+                    } : row)
+                    setDataSource(newData)
+                }
+            } else {
+                let response = await newsApi.AddNews(data)
             }
 
             setIsModalOpen(false)
@@ -139,7 +161,7 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
                 onCancel={handleCancel}
                 width={800}
             >
-                <Form form={form} initialValues={{ News_Title: dataRow?.News_Title || '', TypeNews_Name:1, News_Description: dataRow?.News_Description || '', News_Content: dataRow?.News_Content || '', }} name="dynamic_rule" style={{ maxWidth: 800 }}>
+                <Form form={form} name="dynamic_rule" style={{ maxWidth: 800 }}>
 
 
                     <Form.Item

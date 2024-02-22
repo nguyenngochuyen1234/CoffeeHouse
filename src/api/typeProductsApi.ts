@@ -17,7 +17,7 @@ const typeProductsApi={
   //   const url=`api/typeProduct/${id}`
   //   return axiosClient.get(url)
   // },
-  deleteTypeProduct(id:number){
+  deleteTypeProduct(id:string){
     const url=`api/typeProduct/${id}`
     return axiosClient.delete(url)
   }

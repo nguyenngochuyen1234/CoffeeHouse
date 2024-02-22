@@ -23,25 +23,21 @@ const BlogDetail = () => {
         if (idNews) {
           let api = await newsApi.getNews(idNews)
           let allNewsApi = await newsApi.getAllNews()
-          console.log({ idNews })
           if (api.data[0]) {
             setBlog(api.data[0])
+            let { nextBlog, prevBlog } = navigatePageBlog(api.data[0], allNewsApi.data)
+            setNextBlog(nextBlog)
+            setPrevBlog(prevBlog)
+
           }
         }
       } catch (error) {
         console.log({ error })
       }
     }
-    // let blogData = newsFakeApi.find(item => item.News_ID === idNews && item.TypeNews_Name == typeNews)
-    // if (blogData) {
-      // let {nextBlog, prevBlog} = navigatePageBlog(blogData)
-      // setNextBlog(nextBlog)
-      // setPrevBlog(prevBlog)
-      // setBlog(blogData)
-    // }
     fetchData()
   }, [idNews, typeNews])
-  const navigateNextBlog = () => {
+  const navigateNextBlog = async () => {
     if (nextBlog) {
       navigate(`/blogs/${nextBlog.typeNews}/${nextBlog.idNews}`)
       setIdNews(nextBlog.idNews)
@@ -68,7 +64,7 @@ const BlogDetail = () => {
             <ol className='inline-flex leading-4 text-[18px] items-center gap-2'>
               <li>Blog</li>
               <li className='h-4 w-[2px] bg-[#000000]'></li>
-              <li className='text-[#777777]'>{blog?.TypeNews_Name}</li>
+              <li className='text-[#777777]'>{typeNews}</li>
             </ol>
           </div>
           <h1 className='my-5 text-[34px] font-[600] '>{blog?.News_Title}</h1>

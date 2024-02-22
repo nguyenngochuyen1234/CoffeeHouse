@@ -51,7 +51,6 @@ const App: React.FC = () => {
   useEffect(() => {
     if (selectedMenuId == "manageTypeProduct") {
       navigate('typeProduct')
-
     } else if (selectedMenuId == "manageProduct") {
       navigate('product')
 
@@ -75,7 +74,7 @@ const App: React.FC = () => {
           defaultSelectedKeys={['1']}
           mode="inline" items={items}
           onSelect={(item) => {
-            setSelectedMenuId(item.key.toString()); // Lưu ID của menu được chọn vào state
+            setSelectedMenuId(item.key.toString()); 
           }}
         />
       </Sider>

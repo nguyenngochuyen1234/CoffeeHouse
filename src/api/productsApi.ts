@@ -17,9 +17,17 @@ const productsApi={
   //   const url=`api/product/${id}`
   //   return axiosClient.get(url)
   // },
-  deleteProduct(id:number){
+  deleteProduct(id:string){
     const url=`api/product/${id}`
     return axiosClient.delete(url)
+  },
+  getProductByType(id:string){
+    const url = `api/product/getProductByType/${id}`
+    return axiosClient.get(url)
+  },
+  getProductBySearch(dataSearch:string){
+    const url = `api/product/search/${dataSearch}`
+    return axiosClient.get(url)
   }
 }
 export default productsApi

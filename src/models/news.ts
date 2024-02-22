@@ -14,7 +14,9 @@ export interface news {
     News_Image: string;
     News_Content: string;
     TypeNews_ID: number;
+    TypeNews_Name: string;
     News_Description: string;
+    time:string
 }
 
 export interface newsRow {
