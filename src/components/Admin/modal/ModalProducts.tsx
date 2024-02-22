@@ -84,6 +84,7 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
                 Product_Image:ProductsImage,
             }
             await productsApi.addProduct(dataProduct)
+            //add
             // if (!dataRow?.TypeProduct_Name) {
             //     // add
             //     let response = await productsApi.addProduct(data)
