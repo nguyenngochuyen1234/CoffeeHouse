@@ -119,6 +119,7 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
                 ...values,
                 News_Image: `http://localhost:8800/uploads/${NewsImage}`,
             }
+            console.log(dataRow?.News_ID)
             if (dataRow?.News_ID) {
                 let dataUpdate = {
                     ...values,
@@ -137,6 +138,16 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
                 }
             } else {
                 let response = await newsApi.AddNews(data)
+                let id = response.data.id
+                if (id) {
+                    let typeNewName = typeNews.find(item => item.TypeNews_ID == values.TypeNews_Name)
+
+                    let newData = [...dataSource, {
+                        ...data,
+                        key: data.News_ID, TypeNews_Name: typeNewName?.TypeNews_Name
+                    }]
+                    setDataSource(newData)
+                }
             }
 
             setIsModalOpen(false)

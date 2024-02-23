@@ -53,7 +53,7 @@ const BlogList = () => {
               <h3 onClick={()=>navigateBlogs(blog.blogTitle)} className="blog_home_blogtitle">{blog.blogTitle}</h3>
               <div className="flex flex-wrap">
                 {
-                  blog.blogList.map(blogItem => <div key={blogItem.News_ID} className="blog_item" onClick={() => { navigateBlog(blogItem) }}>
+                  blog.blogList.map((blogItem:newsRow) => <div key={blogItem.News_ID} className="blog_item" onClick={() => { navigateBlog(blogItem) }}>
                     <Image
                       width={'100%'}
                       preview={false}

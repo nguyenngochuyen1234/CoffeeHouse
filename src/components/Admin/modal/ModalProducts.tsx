@@ -7,10 +7,11 @@ import { productsRow, typeProducts } from '@/models';
 import { AnyObject } from 'antd/es/_util/type';
 import productsApi from '@/api/productsApi';
 
-interface ProductsApiResponse { 
+interface ProductsApiResponse {
     id: number;
 }
 export interface ModalProductsProps {
+    dataSource: productsRow[]
     isModalOpen: boolean
     setIsModalOpen: (newValue: boolean) => void
     setDataSource: React.Dispatch<React.SetStateAction<productsRow[]>>
@@ -21,7 +22,7 @@ const formItemLayout = {
     wrapperCol: { span: 25 },
 };
 
-const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOpen, setDataSource, dataRow }) => {
+const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOpen, setDataSource, dataRow, dataSource }) => {
     const [ProductsImage, setProductsImage] = useState('')
     const props = {
         action: 'http://localhost:8800/api/upload',
@@ -40,7 +41,7 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
     const [form] = Form.useForm();
     const [checkNick, setCheckNick] = useState(false);
     const [typeProducts, settypeProducts] = useState<typeProducts[]>([])
-    
+
 
     useEffect(() => {
         form.validateFields(['nickname']);
@@ -48,8 +49,19 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
 
     useEffect(() => {
         if (dataRow) {
+            console.log(dataRow)
             form.setFieldsValue({
                 TypeProduct_ID: dataRow.TypeProduct_ID || '',
+                TypeProduct_Name: dataRow.TypeProduct_Name || '',
+                Product_Name: dataRow.Product_Name || '',
+                Product_Price: dataRow.Product_Price || '',
+                Product_Image: [{
+                    uid: '-1',
+                    name: 'image.png',
+                    status: 'done',
+                    url: dataRow?.Product_Image || ''
+                }],
+                Product_Description: dataRow.Product_Description || ''
             });
         }
     }, [dataRow, form]);
@@ -57,7 +69,7 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await typeProductsApi.getAllTypeProduct    ()
+                const response = await typeProductsApi.getAllTypeProduct()
                 if (response?.data) {
                     settypeProducts(response.data)
                 }
@@ -79,41 +91,30 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
     const onCheck = async () => {
         try {
             const values = await form.validateFields();
+            const linkImage = `http://localhost:8800/uploads/${ProductsImage}`
             const dataProduct = {
                 ...values,
-                Product_Image:ProductsImage,
+                Product_Image: linkImage,
             }
             await productsApi.addProduct(dataProduct)
             //add
-            // if (!dataRow?.TypeProduct_Name) {
-            //     // add
-            //     let response = await productsApi.addProduct(data)
-            //     let data:ProductsApiResponse = response.data
-            //     setDataSource((prev: productsRow[]) => [...prev, {
-            //       key: data.id,
-            //       idProduct: data.id.toString(),
-            //       Product_Name: values.Product_Name,
-            //       Product_Image: values.Product_Image,
-            //       Product_Price: values.Product_Price,
-            //       TypeProduct_ID: values.TypeProduct_ID,
-            //       Product_Description: values.Product_Description,
-            //     }])
-
-            // } else {
-            //     let id = dataRow.Product_ID
-            //     let updateRow = {
-            //         idProduct: data.id.toString(),
-            //         Product_Name: values.Product_Name,
-            //         Product_Image: values.Product_Image,
-            //         Product_Price: values.Product_Price,
-            //         TypeProduct_ID: values.TypeProduct_ID,
-            //         Product_Description: values.Product_Description,
-            //     }
-            //     await productsApi.updateProduct(updateRow)
-            //     setDataSource((prev: productsRow[]) => prev.map(row=>row.idProduct === id ? {
-            //       ...updateRow, key:id
-            //     } : row))
-            // }
+            if (!dataRow?.idProduct) {
+                // add
+                let response = await productsApi.addProduct(dataProduct)
+                if (response.data.id) {
+                    let id = response.data.id
+                    let typeProductName = typeProducts.find(item => item.TypeProduct_ID == dataProduct.TypeProduct_Name)
+                    let dataUpdate = [...dataSource, { ...dataProduct, key: id, idProduct:id,  TypeProduct_Name:typeProductName?.TypeProduct_Name}]
+                    console.log({dataUpdate})
+                    setDataSource(dataUpdate)
+                }
+            } else {
+                let id = dataRow.idProduct
+                await productsApi.updateProduct(dataProduct)
+                setDataSource((prev: productsRow[]) => prev.map(row => row.idProduct === id ? {
+                    ...dataProduct, key: id
+                } : row))
+            }
             setIsModalOpen(false)
         } catch (errorInfo) {
             console.log('Failed:', errorInfo);
@@ -146,7 +147,7 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
                         rules={[{ required: true, message: 'Vui lòng chọn' }]}
                     >
                         <Select>
-                            {typeProducts?.map(item => <Select.Option value={item.TypeProduct_ID}>{item.TypeProduct_Name}</Select.Option>)}
+                            {typeProducts?.map(item => <Select.Option key={item.TypeProduct_ID} value={item.TypeProduct_ID}>{item.TypeProduct_Name}</Select.Option>)}
 
                         </Select>
                     </Form.Item>

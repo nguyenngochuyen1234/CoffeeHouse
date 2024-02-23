@@ -104,6 +104,7 @@ const TypeProduct: React.FC = () => {
     try{
       const newData = dataSource.filter((item) => item.key !== key);
       setDataSource(newData);
+      console.log({key})
       await typeProductsApi.deleteTypeProduct(key)
     }catch(err){
       console.error(err)

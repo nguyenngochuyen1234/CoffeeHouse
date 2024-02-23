@@ -13,7 +13,7 @@ const typeNewsApi={
     const url="api/typeNews"
     return axiosClient.put(url, data)
   },
-  deleteTypeNews(id:number){
+  deleteTypeNews(id:string){
     const url=`api/typeNews/${id}`
     return axiosClient.delete(url)
   }

@@ -3,7 +3,7 @@ import type { InputRef } from 'antd';
 import { Button, Form, Input, Popconfirm, Table } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import { AnyObject } from 'antd/es/_util/type';
-import { DeleteOutlined, EditOutlined,PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import typeNewsApi from '@/api/typeNewsApi';
 import { typeNews, typeNewsRows } from '@/models';
 import ModalAddTypeNews from '@/components/Admin/modal/ModalAddTypeNews';
@@ -12,7 +12,7 @@ const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
 
 
-interface EditableRowProps { 
+interface EditableRowProps {
   index: number;
 }
 
@@ -61,7 +61,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
 type EditableTableProps = Parameters<typeof Table>[0];
 
 interface DataType {
-  key: number;
+  key: string;
   TypeNews_ID: string;
   TypeNews_Name: string;
 
@@ -78,16 +78,16 @@ const TypeNews: React.FC = () => {
     const fetchData = async () => {
       try {
         const response = await typeNewsApi.getAllTypeNews();
-        if(response?.data){
-          let dt = response.data.map((item:typeNews)=>{
-            return{
-              key:item.TypeNews_ID,
+        if (response?.data) {
+          let dt = response.data.map((item: typeNews) => {
+            return {
+              key: item.TypeNews_ID,
               ...item
             }
           })
           setDataSource(dt)
         }
-        console.log({response})
+        console.log({ response })
       } catch (err) {
         console.error('Error fetching data:', err);
       }
@@ -95,18 +95,18 @@ const TypeNews: React.FC = () => {
 
     fetchData();
   }, [])
-  
+
   const handleEdit = (record: AnyObject) => {
     setDataRow(record)
     setIsModalOpen(true)
   }
-  
-  const handleDelete = async(key: number) => {
-    try{
+
+  const handleDelete = async (key: string) => {
+    try {
       const newData = dataSource.filter((item) => item.key !== key);
       setDataSource(newData);
       await typeNewsApi.deleteTypeNews(key)
-    }catch(err){
+    } catch (err) {
       console.error(err)
     }
   };
@@ -131,7 +131,7 @@ const TypeNews: React.FC = () => {
             <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
               <DeleteOutlined className='text-[red] text-[18px]' />
             </Popconfirm>
-            <EditOutlined onClick={()=>handleEdit(record)} className='text-[18px] text-[#1677ff] cursor-pointer' />
+            <EditOutlined onClick={() => handleEdit(record)} className='text-[18px] text-[#1677ff] cursor-pointer' />
           </div>
         ) : null,
     },
@@ -178,7 +178,7 @@ const TypeNews: React.FC = () => {
 
   return (
     <div>
-      <ModalAddTypeNews isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setDataSource={setDataSource} dataRow={dataRow}/>
+      <ModalAddTypeNews isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setDataSource={setDataSource} dataRow={dataRow} />
       <Button className='my-4 absolute top-[1px]' type="primary" icon={<PlusOutlined />} onClick={handleAdd} >
         Tạo mới
       </Button>

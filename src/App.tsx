@@ -12,7 +12,7 @@ import Blogs from "./pages/Blogs";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />}>
+      <Route path="/" element={ <Home />}>
         <Route index element={<BodyHome />} />
         <Route path="blogs/:typeNews/:idNews" element={<BlogDetail />} />
         <Route path="blogs/:typeNews" element={<Blogs />} />

@@ -124,7 +124,7 @@ const Product = () => {
     },
     {
       title: 'ID',
-      dataIndex: 'Product_ID',
+      dataIndex: 'idProduct',
       width: '150px',
     },
     {
@@ -209,7 +209,7 @@ const Product = () => {
   return (
 
       <div>
-        <ModalProducts isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setDataSource={setDataSource} dataRow={dataRow} />
+        <ModalProducts isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setDataSource={setDataSource} dataSource={dataSource} dataRow={dataRow} />
         <Button className='my-4 absolute top-[1px]' type="primary" icon={<PlusOutlined />} onClick={handleAdd} >
           Tạo mới
         </Button>

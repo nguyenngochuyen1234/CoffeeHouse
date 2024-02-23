@@ -3,7 +3,7 @@ export interface typeNews {
     TypeNews_ID: number
 }
 export interface typeNewsRows {
-    key: number;
+    key: string;
     TypeNews_ID: string;
     TypeNews_Name: string;
 }

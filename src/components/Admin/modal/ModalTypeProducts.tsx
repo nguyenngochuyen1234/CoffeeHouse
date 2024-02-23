@@ -56,7 +56,7 @@ const ModalTypeProducts: React.FC<ModalTypeProductsProps> = ({ isModalOpen, setI
             TypeProduct_Name: values.TypeProduct_Name,
             TypeProduct_Img: values.TypeProduct_Img,
           }
-        await typeProductsApi.updateTypeProduct(updateRow)
+        let idx = await typeProductsApi.updateTypeProduct(updateRow)
         setDataSource((prev: typeProductsRows[]) => prev.map(row=>row.TypeProduct_ID === id ? {
           ...updateRow, key:id
         } : row))
