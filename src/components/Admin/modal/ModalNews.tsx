@@ -6,6 +6,7 @@ import ReactQuill from "react-quill";
 import { newsRow, typeNews } from '@/models';
 import { AnyObject } from 'antd/es/_util/type';
 import newsApi from '@/api/newsApi';
+import { STATIC_HOST } from '@/common';
 
 
 const modules = () => ({
@@ -40,7 +41,7 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
     const [NewsImage, setNewsImage] = useState('')
     const props = {
 
-        action: 'http://localhost:8800/api/upload',
+        action: `${STATIC_HOST}api/upload`,
         onChange(info: any) {
             if (info.file.status !== 'uploading') {
             }
@@ -117,7 +118,7 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
             const values = await form.validateFields();
             let data = {
                 ...values,
-                News_Image: `http://localhost:8800/uploads/${NewsImage}`,
+                News_Image: `${STATIC_HOST}uploads/${NewsImage}`,
             }
             console.log(dataRow?.News_ID)
             if (dataRow?.News_ID) {

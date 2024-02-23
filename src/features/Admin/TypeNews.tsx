@@ -61,7 +61,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
 type EditableTableProps = Parameters<typeof Table>[0];
 
 interface DataType {
-  key: string;
+  key: number;
   TypeNews_ID: string;
   TypeNews_Name: string;
 
@@ -101,7 +101,7 @@ const TypeNews: React.FC = () => {
     setIsModalOpen(true)
   }
 
-  const handleDelete = async (key: string) => {
+  const handleDelete = async (key: number) => {
     try {
       const newData = dataSource.filter((item) => item.key !== key);
       setDataSource(newData);

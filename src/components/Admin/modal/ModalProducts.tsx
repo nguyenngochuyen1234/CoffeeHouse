@@ -6,6 +6,7 @@ import ReactQuill from "react-quill";
 import { productsRow, typeProducts } from '@/models';
 import { AnyObject } from 'antd/es/_util/type';
 import productsApi from '@/api/productsApi';
+import { STATIC_HOST } from '@/common';
 
 interface ProductsApiResponse {
     id: number;
@@ -25,7 +26,7 @@ const formItemLayout = {
 const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOpen, setDataSource, dataRow, dataSource }) => {
     const [ProductsImage, setProductsImage] = useState('')
     const props = {
-        action: 'http://localhost:8800/api/upload',
+        action: `${STATIC_HOST}api/upload`,
         onChange(info: any) {
             if (info.file.status !== 'uploading') {
             }
@@ -49,7 +50,6 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
 
     useEffect(() => {
         if (dataRow) {
-            console.log(dataRow)
             form.setFieldsValue({
                 TypeProduct_ID: dataRow.TypeProduct_ID || '',
                 TypeProduct_Name: dataRow.TypeProduct_Name || '',
@@ -91,29 +91,43 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
     const onCheck = async () => {
         try {
             const values = await form.validateFields();
-            const linkImage = `http://localhost:8800/uploads/${ProductsImage}`
+            let link_image = ProductsImage
+
+            console.log(dataRow?.idProduct)
+            if (!link_image.includes(STATIC_HOST)) {
+                link_image = `${STATIC_HOST}uploads/${ProductsImage}`
+            }
             const dataProduct = {
                 ...values,
-                Product_Image: linkImage,
+                Product_Image: link_image,
             }
-            await productsApi.addProduct(dataProduct)
-            //add
             if (!dataRow?.idProduct) {
-                // add
+                await productsApi.addProduct(dataProduct)
                 let response = await productsApi.addProduct(dataProduct)
                 if (response.data.id) {
                     let id = response.data.id
                     let typeProductName = typeProducts.find(item => item.TypeProduct_ID == dataProduct.TypeProduct_Name)
-                    let dataUpdate = [...dataSource, { ...dataProduct, key: id, idProduct:id,  TypeProduct_Name:typeProductName?.TypeProduct_Name}]
-                    console.log({dataUpdate})
+                    let dataUpdate = [...dataSource, { ...dataProduct, key: id, idProduct: id, TypeProduct_Name: typeProductName?.TypeProduct_Name }]
+                    console.log(id)
                     setDataSource(dataUpdate)
                 }
             } else {
                 let id = dataRow.idProduct
-                await productsApi.updateProduct(dataProduct)
-                setDataSource((prev: productsRow[]) => prev.map(row => row.idProduct === id ? {
-                    ...dataProduct, key: id
-                } : row))
+                let link_image_Update = dataRow.Product_Image
+
+                if (!link_image_Update.includes(STATIC_HOST)) {
+                    link_image_Update = `${STATIC_HOST}uploads/${dataRow.Product_Image}`
+                }
+
+                await productsApi.updateProduct({...dataProduct, idProduct: id, Product_Image: link_image_Update})
+                let updateData = dataSource.map((row: productsRow) => row.idProduct === id ? {
+                    ...dataProduct, key: id, Product_Image: link_image_Update, Product_Price: parseFloat(dataProduct.Product_Price), idProduct: id
+                } : row)
+                console.log({ dataSource, updateData })
+                setDataSource(updateData)
+                // setDataSource((prev: productsRow[]) => prev.map(row => row.idProduct === id ? {
+                //     ...dataProduct, key: id, Product_Image: link_image
+                // } : row))
             }
             setIsModalOpen(false)
         } catch (errorInfo) {
