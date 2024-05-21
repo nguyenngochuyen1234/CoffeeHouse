@@ -26,45 +26,10 @@ const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
   );
 };
 
-interface EditableCellProps {
-  title: React.ReactNode;
-  editable: boolean;
-  children: React.ReactNode;
-
-}
-
-const EditableCell: React.FC<EditableCellProps> = ({
-  title,
-  editable,
-  children,
-
-  ...restProps
-}) => {
-  const inputRef = useRef<InputRef>(null);
-  const form = useContext(EditableContext)!;
-
-
-  const save = async () => {
-    try {
-      const values = await form.validateFields();
-    } catch (errInfo) {
-      console.log('Save failed:', errInfo);
-    }
-  };
-
-  let childNode = children;
-
-  return <td {...restProps}>{childNode}</td>;
-};
 
 type EditableTableProps = Parameters<typeof Table>[0];
 
-interface DataType {
-  key: string;
-  TypeProduct_ID: string;
-  TypeProduct_Name: string;
-  TypeProduct_Img: string;
-}
+
 
 
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
@@ -126,6 +91,10 @@ const TypeProduct: React.FC = () => {
       dataIndex: 'TypeProduct_Img',
     },
     {
+      title: 'Thuộc menu',
+      dataIndex: 'Name_Menu',
+    },
+    {
       title: 'Hành động',
       dataIndex: 'action',
       width: "110px",
@@ -146,7 +115,7 @@ const TypeProduct: React.FC = () => {
     setIsModalOpen(true)
   };
 
-  const handleSave = (row: DataType) => {
+  const handleSave = (row: typeProductsRows) => {
     const newData = [...dataSource];
     const index = newData.findIndex((item) => row.key === item.key);
     const item = newData[index];
@@ -160,7 +129,6 @@ const TypeProduct: React.FC = () => {
   const components = {
     body: {
       row: EditableRow,
-      cell: EditableCell,
     },
   };
 
@@ -170,7 +138,7 @@ const TypeProduct: React.FC = () => {
     }
     return {
       ...col,
-      onCell: (record: DataType) => ({
+      onCell: (record: typeProductsRows) => ({
         record,
         editable: col.editable,
         dataIndex: col.dataIndex,

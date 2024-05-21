@@ -3,7 +3,7 @@ import React from 'react';
 import product_1 from '../../assets/product_1.webp'
 import { PlusCircleFilled } from '@ant-design/icons';
 import { products } from '@/models';
-
+import { useNavigate } from 'react-router-dom';
 export interface CardProductComponentProps {
     productData: products
     setProducInfo: React.Dispatch<React.SetStateAction<products | null>>
@@ -12,9 +12,11 @@ export interface CardProductComponentProps {
 
 
 const CardProductComponent: React.FC<CardProductComponentProps> = ({ productData, setProducInfo, setShow }) => {
+    const navigate = useNavigate()
     const handleClick = () => {
         setProducInfo(productData)
         setShow(true)
+        // navigate(`/products/${productData.idProduct}`)
     }
     return (
         <div className=' shadow-2xl rounded-lg bg-white p-2 cursor-poiter' onClick={handleClick}>

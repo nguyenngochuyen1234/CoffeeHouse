@@ -144,7 +144,8 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
                     let typeNewName = typeNews.find(item => item.TypeNews_ID == values.TypeNews_Name)
                     let newData = [...dataSource, {
                         ...data,
-                        key: data.News_ID, TypeNews_Name: typeNewName?.TypeNews_Name
+                        News_ID:id,
+                        key: id, TypeNews_Name: typeNewName?.TypeNews_Name
                     }]
                     setDataSource(newData)
                 }

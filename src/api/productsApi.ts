@@ -13,10 +13,10 @@ const productsApi={
     const url=`api/product`
     return axiosClient.put(url, data)
   },
-  // detailProduct(id:number){
-  //   const url=`api/product/${id}`
-  //   return axiosClient.get(url)
-  // },
+  detailProduct(id:string){
+    const url=`api/product/${id}`
+    return axiosClient.get(url)
+  },
   deleteProduct(id:string){
     const url=`api/product/${id}`
     return axiosClient.delete(url)

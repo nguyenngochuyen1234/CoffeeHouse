@@ -1,6 +1,6 @@
 import { EnvironmentOutlined, FacebookOutlined, InstagramOutlined, PhoneOutlined } from "@ant-design/icons"
 import { Col, Divider, Image, Row } from "antd"
-import Slider1 from '../../assets/desktop_9c03e90bd535442e9ac18d23fc551cb6.webp'
+import Slider1 from '@/assets/images/desktop_9c03e90bd535442e9ac18d23fc551cb6.webp'
 
 const Footer = () => {
   return (

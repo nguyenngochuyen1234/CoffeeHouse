@@ -2,19 +2,19 @@ import axiosClient from "./axiosClient"
 import { typeNews } from "@/models"
 const typeNewsApi={
   getAllTypeNews(){
-    const url="api/typeNews"
+    const url="api/typenews"
     return axiosClient.get(url)
   },
   AddTypeNews(data:typeNews){
-    const url="api/typeNews"
+    const url="api/typenews"
     return axiosClient.post(url, data)
   },
   UpdateTypeNews(data:typeNews){
-    const url="api/typeNews"
+    const url="api/typenews"
     return axiosClient.put(url, data)
   },
   deleteTypeNews(id:number){
-    const url=`api/typeNews/${id}`
+    const url=`api/typenews/${id}`
     return axiosClient.delete(url)
   }
 }

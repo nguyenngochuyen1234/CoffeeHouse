@@ -30,6 +30,7 @@ function getItem(
 const items: MenuItem[] = [
   getItem('Sản phẩm', 'product', <ShoppingOutlined />, [
     getItem('Quản lý loại sản phẩm', 'manageTypeProduct'),
+    getItem('Quản lý menu loại sản phẩm', 'manageMenuProduct'),
     getItem('Quản lý sản phẩm', 'manageProduct'),
   ]),
 
@@ -62,6 +63,8 @@ const App: React.FC = () => {
     } else if (selectedMenuId == "manageNews") {
       navigate('news')
 
+    }else if(selectedMenuId == "manageMenuProduct"){
+      navigate('menu')
     }
   }, [selectedMenuId])
 

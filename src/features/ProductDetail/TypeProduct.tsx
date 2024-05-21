@@ -6,14 +6,15 @@ import SearchProduct from '@/components/ProductDetail/SearchProduct';
 import { products, typeProducts } from '@/models';
 import { SearchOutlined, TrophyFilled } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-
-const TypeProduct = () => { 
+const TypeProductPage = () => { 
     const [showInfoProduct,setShowInfoProduct]=useState(false);
+    const [productInfo, setProducInfo] = useState<products | null>(null)
+    const navigate = useNavigate()
     const [showSearchModal,setShowSearchModal]=useState(false);
     const [typeProducts, setTypeProducts] = useState<typeProducts[]>([])
     const [products, setProducts] = useState<products[]>([])
-    const [productInfo, setProducInfo] = useState<products | null>(null)
 
     const handleClickClose =()=>{
         setShowInfoProduct(false);
@@ -25,6 +26,7 @@ const TypeProduct = () => {
         setShowInfoProduct(true)
         setShowSearchModal(false)
         setProducInfo(products)
+        navigate(`/products/${products.idProduct}`)
     }
 
     useEffect(()=>{
@@ -42,7 +44,7 @@ const TypeProduct = () => {
     },[])
     return (
         <>
-        <div  className='min-h-[900px] mx-44  mt-[130px] mb-[120px]'>
+        <div  className='min-h-[900px] mx-44 mt-[130px] mb-[120px]'>
             <div className='ml-1.5'>
                 <div className='flex justify-center'>
                     <span> <TrophyFilled className='text-2xl text-[#faa515] mb-2'/> 
@@ -55,7 +57,7 @@ const TypeProduct = () => {
 
                </div>
                <div className='flex flex-wrap gap-[37px] items-center mt-10'>
-                    {products.map(item => <CardProductComponent key={item.idProduct} productData={item} setProducInfo={setProducInfo} setShow={setShowInfoProduct}/>)}
+                    {products.map(item => <CardProductComponent key={item.idProduct} productData={item} setShow={setShowInfoProduct} setProducInfo={setProducInfo}/>)}
                </div>
             </div>
         </div>
@@ -65,4 +67,4 @@ const TypeProduct = () => {
     );
 };
 
-export default TypeProduct;
+export default TypeProductPage;

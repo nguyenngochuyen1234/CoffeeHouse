@@ -14,7 +14,7 @@ const ProductInfomation: React.FC<ProductInfomationProps> = ({ onClose, productI
             <div className='bg-white w-[410px] h-[500px] rounded-md overflow-y-scroll'>
                 <div className='flex items-center justify-center p-4'>
                     <CloseOutlined className='text-xl opacity-50' onClick={() => onClose()} />
-                    <b className='text-sm px-24'>Thông tin sản phẩm</b>
+                    <b className='text15-bold px-24'>Thông tin sản phẩm</b>
                 </div>
                 <hr />
                 <div className='p-4'>

@@ -23,9 +23,11 @@ const BlogDetail = () => {
         if (idNews) {
           let api = await newsApi.getNews(idNews)
           let allNewsApi = await newsApi.getAllNews()
-          if (api.data[0]) {
-            setBlog(api.data[0])
-            let { nextBlog, prevBlog } = navigatePageBlog(api.data[0], allNewsApi.data)
+          if (api.data) {
+            setBlog(api.data)
+            let { nextBlog, prevBlog } = navigatePageBlog(api.data, allNewsApi.data)
+            console.log(api.data)
+            console.log( allNewsApi.data)
             setNextBlog(nextBlog)
             setPrevBlog(prevBlog)
 

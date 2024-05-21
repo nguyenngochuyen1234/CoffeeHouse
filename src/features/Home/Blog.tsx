@@ -4,16 +4,18 @@ import typeNewsApi from '@/api/typeNewsApi';
 
 import { blogsData, news, newsRow, typeNews } from '@/models';
 import { sliceParagraph } from '@/utils/paragraph';
-import { Image } from 'antd';
+import { Image, Spin } from 'antd';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const BlogList = () => {
   const navigate = useNavigate()
   const [blogsData, setBlogsData] = useState<blogsData[]>([])
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true)
         let blogs: blogsData[] = []
         const response = await typeNewsApi.getAllTypeNews();
         const blogResponsive = await newsApi.getAllNews()
@@ -29,7 +31,9 @@ const BlogList = () => {
 
         }
         setBlogsData(blogs)
+        setLoading(false)
       } catch (err) {
+        setLoading(false)
         console.error('Error fetching data:', err);
       }
     };
@@ -46,46 +50,50 @@ const BlogList = () => {
   }
   return (
     <>
-      {
-        blogsData.map((blog, idx) => {
-          return (
-            <div className="mx-auto px-4" key={idx}>
-              <h3 onClick={()=>navigateBlogs(blog.blogTitle)} className="blog_home_blogtitle">{blog.blogTitle}</h3>
-              <div className="flex flex-wrap">
-                {
-                  blog.blogList.map((blogItem:newsRow) => <div key={blogItem.News_ID} className="blog_item" onClick={() => { navigateBlog(blogItem) }}>
-                    <Image
-                      width={'100%'}
-                      preview={false}
-                      className='blog_item_img'
-                      src={blogItem.News_Image}
-                    />
-                    <div className='article_item_info'>
-                      <span className='text-[#00000099]'>{blogItem.time}</span>
-                      <h3>
-                        <a className="article_item_image" href="#" title={blogItem.News_Title}>{blogItem.News_Title}</a>
-                      </h3>
-                      <p className='opacity-80'>{sliceParagraph(blogItem.News_Description, 200)}</p>
-                    </div>
-                  </div>)
-                }
+      <Spin spinning={loading}>
+
+        {
+          blogsData.map((blog, idx) => {
+            return (
+              <div className="mx-auto px-4" key={idx}>
+                <h3 onClick={() => navigateBlogs(blog.blogTitle)} className="blog_home_blogtitle">{blog.blogTitle}</h3>
+                <div className="flex flex-wrap">
+                  {
+                    blog.blogList.map((blogItem: newsRow) => <div key={blogItem.News_ID} className="blog_item" onClick={() => { navigateBlog(blogItem) }}>
+                      <Image
+                        width={'100%'}
+                        preview={false}
+                        className='blog_item_img'
+                        src={blogItem.News_Image}
+                      />
+                      <div className='article_item_info'>
+                        <span className='text-[#00000099]'>{blogItem.time}</span>
+                        <h3>
+                          <a className="article_item_image" href="#" title={blogItem.News_Title}>{blogItem.News_Title}</a>
+                        </h3>
+                        <p className='opacity-80 text-[14px]'>{sliceParagraph(blogItem.News_Description, 200)}</p>
+                      </div>
+                    </div>)
+                  }
+                </div>
               </div>
-            </div>
-          )
-        })
-      }
+            )
+          })
+        }
+      </Spin>
     </>
   )
 }
 const Blog = () => {
   return (
     <div className='w-[100%] bg-[#FFF7E6] pb-[150px]'>
+
+
       <div className="flex justify-center items-center pt-10">
         <img src="https://file.hstatic.net/1000075078/file/coffee-2_2_92db24958ff14ac4b4249b3256f7a415.png" alt="" />
         <h1 className="text-[28px] font-[600] ml-2">Chuyện nhà</h1>
       </div>
       <BlogList />
-
     </div>
   )
 }

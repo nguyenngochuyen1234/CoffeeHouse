@@ -5,27 +5,52 @@ import TypeNews from "./features/Admin/TypeNews";
 import News from "./features/Admin/News";
 import TypeProduct from "./features/Admin/TypeProduct";
 import Product from "./features/Admin/Product";
-import ProductDetailPage from "./pages/ProductDetailPage";
 import BlogDetail from "./pages/BlogDetail";
 import BodyHome from "./pages/BodyHome";
 import Blogs from "./pages/Blogs";
+import ProductPage from "./features/Home/ProductPage";
+import TypeProductPage from "./features/ProductDetail/TypeProduct";
+import Checkout from "./features/Home/Checkout";
+import { Button, ConfigProvider, Space } from 'antd';
+import Menu from "./features/Admin/Menu";
+import Collections from "./pages/Collections";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={ <Home />}>
-        <Route index element={<BodyHome />} />
-        <Route path="blogs/:typeNews/:idNews" element={<BlogDetail />} />
-        <Route path="blogs/:typeNews" element={<Blogs />} />
-      </Route>
-      <Route path="/admin" element={<Admin />}>
-        <Route path='typeProduct' element={<TypeProduct />} />
-        <Route path='product' element={<Product />} />
-        <Route path='typeNews' element={<TypeNews />} />
-        <Route path='news' element={<News />} />
-      </Route>
+    <ConfigProvider
+      theme={{
+        token: {
+          // colorPrimary: '#faa515',
+          // colorIcon: '#faa515',
+          fontSize:14,
+        },
+      }}
+    >
 
-      <Route path="/product-detail" element={<ProductDetailPage />} />
-    </Routes>
+      <Routes>
+        <Route path="/" element={<Home />}>
+          <Route index element={<BodyHome />} />
+          <Route path="blogs/:typeNews/:idNews" element={<BlogDetail />} />
+          <Route path="blogs/:typeNews" element={<Blogs />} />
+          <Route path="products/:idProduct" element={<ProductPage />} />
+          <Route path="/product-detail" element={<TypeProductPage />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path='/collections/:idMenu' element={<Collections />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+        </Route>
+        <Route path="/admin" element={<Admin />}>
+          <Route path='typeProduct' element={<TypeProduct />} />
+          <Route path='product' element={<Product />} />
+          <Route path='typeNews' element={<TypeNews />} />
+          <Route path='news' element={<News />} />
+          <Route path='menu' element={<Menu />} />
+        </Route>
+
+      </Routes>
+    </ConfigProvider>
+
   )
 }
 export default App

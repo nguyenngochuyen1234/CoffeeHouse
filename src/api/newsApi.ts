@@ -10,7 +10,7 @@ const newsApi = {
     return axiosClient.post(url, data)
   },
   getNews(id: string) {
-    const url = `api/news/getNews/${id}`
+    const url = `api/news/${id}`
     return axiosClient.get(url)
   },
   deleteNews(id: string) {

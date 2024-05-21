@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Select, Modal, Form, Input, Upload, Button, message, Row } from 'antd';
+import { Select, Modal, Form, Input, Upload, Button, message, Row, Divider } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import typeProductsApi from '@/api/typeProductsApi';
 import ReactQuill from "react-quill";
@@ -102,7 +102,6 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
                 Product_Image: link_image,
             }
             if (!dataRow?.idProduct) {
-                await productsApi.addProduct(dataProduct)
                 let response = await productsApi.addProduct(dataProduct)
                 if (response.data.id) {
                     let id = response.data.id
@@ -119,15 +118,11 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
                     link_image_Update = `${STATIC_HOST}uploads/${dataRow.Product_Image}`
                 }
 
-                await productsApi.updateProduct({...dataProduct, idProduct: id, Product_Image: link_image_Update})
+                await productsApi.updateProduct({ ...dataProduct, idProduct: id, Product_Image: link_image_Update })
                 let updateData = dataSource.map((row: productsRow) => row.idProduct === id ? {
                     ...dataProduct, key: id, Product_Image: link_image_Update, Product_Price: parseFloat(dataProduct.Product_Price), idProduct: id
                 } : row)
-                console.log({ dataSource, updateData })
                 setDataSource(updateData)
-                // setDataSource((prev: productsRow[]) => prev.map(row => row.idProduct === id ? {
-                //     ...dataProduct, key: id, Product_Image: link_image
-                // } : row))
             }
             setIsModalOpen(false)
         } catch (errorInfo) {
@@ -210,6 +205,9 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
                     </Form.Item>
 
                 </Form>
+                <Divider orientation="left" plain>
+                    Chọn size
+                </Divider>
             </Modal >
         </>
     );
