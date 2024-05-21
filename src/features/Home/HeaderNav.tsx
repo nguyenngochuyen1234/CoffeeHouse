@@ -20,7 +20,7 @@ const HeaderNav = () => {
           <Button style={{border:'none'}} onClick={()=>navigate('/register')}>Đăng ký</Button>
           <Button style={{border:'none'}} onClick={()=>navigate('/login')}>Đăng nhập</Button>
           {/* <Button size='large' shape="circle" icon={<UserOutlined />} /> */}
-          <Button size='large' shape="circle" icon={<ShoppingOutlined />} />
+          <Button size='large' shape="circle" icon={<ShoppingOutlined />} onClick={()=>navigate('/checkout')} />
         </Col>
       </Row>
     </div>
