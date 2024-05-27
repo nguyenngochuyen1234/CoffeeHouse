@@ -6,7 +6,9 @@ import { ProfileFilled, PlusCircleFilled, MinusCircleFilled } from '@ant-design/
 import { Button, Col, Divider, Row, Spin } from 'antd'
 import { ButtonProduct } from '@/components/Home/ButtonProduct'
 import iconDelivery from '@/assets/images/iconDelivery.svg'
-
+import toppingApi from '@/api/toppingApi'
+import { topping, toppingShow } from '@/models/topping'
+import { useAuth } from '@/AuthContext'
 export interface ProductPageProps {
 
 }
@@ -50,11 +52,12 @@ const toppingProduct = [
 const ProductPage: React.FC<ProductPageProps> = ({ }) => {
 
   const navigate = useNavigate()
+  const {auth} = useAuth()
 
   let idProduct = useParams().idProduct
   const [product, setProduct] = useState<products | null>()
   const [size, setSize] = useState<optionsProduct[]>(sizeProduct)
-  const [topping, setTopping] = useState<optionsProduct[]>(toppingProduct)
+  const [topping, setTopping] = useState<toppingShow[]>([])
   const [relatedProducts, setRelatedProducts] = useState<products[]>([])
   const [quantity, setQuantity] = useState(1)
   const [total, setTotal] = useState(0)
@@ -67,7 +70,15 @@ const ProductPage: React.FC<ProductPageProps> = ({ }) => {
       if (idProduct) {
         let response = await productsApi.detailProduct(idProduct)
         let data = response.data
-        console.log({data})
+        let dataTopping = await toppingApi.getProductTopping(idProduct)
+        if(dataTopping.data){
+          let toppingShow = dataTopping.data.map((item:topping)=> {
+            return({
+              ...item, checked:false
+            })
+          })
+          setTopping(toppingShow)
+        }
         if (data) {
           setProduct(data)
           setTotal(data.Product_Price)
@@ -104,12 +115,12 @@ const ProductPage: React.FC<ProductPageProps> = ({ }) => {
   const clickOption = (type: string, name: string) => {
     let totalOption = 0
     let sizeArrUpdate: optionsProduct[] = size
-    let toppingArrUpdate: optionsProduct[] = topping
+    let toppingArrUpdate: toppingShow[] = topping
     if (type == "size") {
       sizeArrUpdate = size.map(item => item.name === name ? { ...item, checked: true } : { ...item, checked: false })
       setSize(sizeArrUpdate)
     } else if (type == "topping") {
-      toppingArrUpdate = topping.map(item => item.name === name ? { ...item, checked: !item.checked } : item)
+      toppingArrUpdate = topping.map(item => item.Topping_Name === name ? { ...item, checked: !item.checked } : item)
       setTopping(toppingArrUpdate)
     }
     sizeArrUpdate.forEach(item => {
@@ -119,7 +130,7 @@ const ProductPage: React.FC<ProductPageProps> = ({ }) => {
     })
     toppingArrUpdate.forEach(item => {
       if (item.checked) {
-        totalOption += item.price
+        totalOption += item.Topping_Price
       }
     })
     setPriceNotUpdate(originalPrice + totalOption)
@@ -136,6 +147,21 @@ const ProductPage: React.FC<ProductPageProps> = ({ }) => {
     }
 
   }
+
+  const handleOrder = async() => {
+    try{
+      if(auth){
+        let sizeName = size.find(item => item.checked)?.name
+        let toppings = topping.filter(item => item.checked)
+        console.log({sizeName, toppings, total})
+      }else{
+        navigate('login')
+      }
+    }catch(err){
+      console.log(err)
+    }
+  }
+
 
   return (
     <div className='content'>
@@ -170,7 +196,7 @@ const ProductPage: React.FC<ProductPageProps> = ({ }) => {
             {topping.length > 0 && <div>
               <p className='mb-3 text-[18px] font-[400] mt-6'>Topping</p>
               <div className='flex gap-4 flex-wrap'>
-                {topping.map(item => <ButtonProduct name={item.name} key={item.name} checked={item.checked} price={item.price} clickOption={clickOption} type="topping" />)}
+                {topping.map((item:toppingShow) => <ButtonProduct name={item.Topping_Name} key={item.Topping_Name} checked={item.checked} price={item.Topping_Price} clickOption={clickOption} type="topping" />)}
               </div>
             </div>}
             <div className='border-[#c9c9c9] border-[1px] rounded-[5px] h-[46px] flex overflow-hidden mt-4'>
@@ -180,7 +206,7 @@ const ProductPage: React.FC<ProductPageProps> = ({ }) => {
               <input className='h-[100%] mx-3 w-[100%] outline-none text-[18px]' placeholder='Ghi chú thêm cho món này' />
             </div>
             <div className='text-[#fff] bg-[#e57905] mt-4 cursor-pointer font-[500] text-[17px] border-[1px] rounded-[8px] py-1 px-5'>
-              <div className='h-10 flex justify-center items-center'>
+              <div className='h-10 flex justify-center items-center' onClick={handleOrder}>
                 <img className='mr-1' src={iconDelivery} alt="" />
                 Đặt giao tận nơi
               </div>

@@ -32,6 +32,7 @@ const items: MenuItem[] = [
     getItem('Quản lý loại sản phẩm', 'manageTypeProduct'),
     getItem('Quản lý menu loại sản phẩm', 'manageMenuProduct'),
     getItem('Quản lý sản phẩm', 'manageProduct'),
+    getItem('Quản lý topping', 'manageTopping'),
   ]),
 
   getItem('Tin tức', 'news', <ScheduleOutlined />, [
@@ -46,7 +47,7 @@ const App: React.FC = () => {
   const [selectedMenuId, setSelectedMenuId] = useState<string>(''); // State để lưu trữ ID của menu được chọn
 
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer },
   } = theme.useToken();
 
   useEffect(() => {
@@ -65,6 +66,8 @@ const App: React.FC = () => {
 
     }else if(selectedMenuId == "manageMenuProduct"){
       navigate('menu')
+    }else if(selectedMenuId == "manageTopping"){
+      navigate('topping')
     }
   }, [selectedMenuId])
 

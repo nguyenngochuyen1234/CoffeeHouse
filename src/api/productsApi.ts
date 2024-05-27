@@ -9,8 +9,8 @@ const productsApi={
     const url="api/product"
     return axiosClient.post(url, data)
   },
-  updateProduct(data:products){
-    const url=`api/product`
+  updateProduct(id:string,data:products){
+    const url=`api/product/${id}`
     return axiosClient.put(url, data)
   },
   detailProduct(id:string){

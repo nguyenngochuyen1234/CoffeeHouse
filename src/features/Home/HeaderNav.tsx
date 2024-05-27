@@ -1,8 +1,34 @@
 import { Col, Row } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { UserOutlined, ShoppingOutlined } from '@ant-design/icons'
-import { Button } from 'antd'
+import { useAuth } from '@/AuthContext'
+import { Button, Dropdown } from 'antd'
+import type { MenuProps } from 'antd';
+import { Link } from "react-router-dom";
 const HeaderNav = () => {
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <Link to='/updateUser'>Quản lý người dùng</Link>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <Link to='/orders'>Đơn hàng</Link>
+      ),
+    },
+    {
+      key: '3',
+      label: (
+        <a target="_blank">
+          Đăng xuất
+        </a>
+      ),
+    },
+  ];
+  const { auth } = useAuth()
   let navigate = useNavigate()
   return (
     <div className='px-10 py-3.5 items-center border-b border-solid border-[#00000026] opacity-80 h-[60px] bg-white w-[100%] fixed top-0 left-0 z-10 flex-nowrap'>
@@ -17,10 +43,14 @@ const HeaderNav = () => {
           <span className='text-left text14-bold font-semibold mr-7 cursor-pointer'>Trà sữa</span>
         </Col>
         <Col span={2} className='flex justify-end items-center gap-4'>
-          <Button style={{border:'none'}} onClick={()=>navigate('/register')}>Đăng ký</Button>
-          <Button style={{border:'none'}} onClick={()=>navigate('/login')}>Đăng nhập</Button>
-          {/* <Button size='large' shape="circle" icon={<UserOutlined />} /> */}
-          <Button size='large' shape="circle" icon={<ShoppingOutlined />} onClick={()=>navigate('/checkout')} />
+          {auth ? <> <Dropdown menu={{ items }} placement="topRight" arrow>
+            <Button size='large' shape="circle" icon={<UserOutlined />} />
+            </Dropdown>
+            <Button size='large' shape="circle" icon={<ShoppingOutlined />} onClick={() => navigate('/checkout')} />  
+          </> : <>
+            <Button style={{ border: 'none' }} onClick={() => navigate('/register')}>Đăng ký</Button>
+            <Button style={{ border: 'none' }} onClick={() => navigate('/login')}>Đăng nhập</Button>
+          </>}
         </Col>
       </Row>
     </div>

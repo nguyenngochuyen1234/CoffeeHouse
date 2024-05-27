@@ -2,4 +2,4 @@ PORT = 8800
 DB_HOST=b4atx5d13zgsvnoce0cy-mysql.services.clever-cloud.com
 DB_USERNAME = u6wubyjmpuwxjtxy
 DB_PASSWORD = 4aEirCKkYb5RiSkH3vvq
-DB_DBNAME = b4atx5d13zgsvnoce0cy
+DB_DBNAME = b4atx5d13zgsvnoce0cy    

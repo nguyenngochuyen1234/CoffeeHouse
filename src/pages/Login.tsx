@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Checkbox, Form, Input, message, Modal, Result } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import Link from 'antd/es/typography/Link';
+import authApi from '@/api/auth';
 
 // Hàm xử lý khi kết thúc đăng nhập không thành công
 const onFinishFailed = (errorInfo:any) => {
@@ -20,15 +21,18 @@ const Login = () => {
     // Hàm xử lý khi người dùng đăng nhập
     const onFinish = async (values:any) => {
         try {
-            console.log(values)
+            setLoading(true)
+            const {username, password} = values
+            let res = await authApi.login({User_Name:username, User_Password:password})
+            if(res?.data){
+                localStorage.setItem('access_token',res?.data) 
+            }
+            setLoading(false)
+            navigate('/')
         } catch (error) {
-            
+            setLoading(false)
+            console.log({error})
         }
-    };
-
-    // Hàm xử lý khi đóng modal quên mật khẩu
-    const handleOk = () => {
-        setIsModalOpen(false);
     };
 
     return (<>
@@ -43,6 +47,7 @@ const Login = () => {
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
+                disabled={loading}
             >
                 <Form.Item
                     label="Tên đăng nhập/ Email *"
@@ -78,10 +83,9 @@ const Login = () => {
                     <Checkbox>Nhớ tài khoản</Checkbox>
                 </Form.Item>
                 {/* Link để mở modal quên mật khẩu */}
-                <Link onClick={() => setIsModalOpen(true)}>Quên mật khẩu</Link>
 
                 <Form.Item className="my-4">
-                    <Button className='btn-submit' type="primary" htmlType="submit">
+                    <Button className='btn-submit' type="primary" htmlType="submit" loading={loading}>
                         Đăng nhập
                     </Button>
                 </Form.Item>

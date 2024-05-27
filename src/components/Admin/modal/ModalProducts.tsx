@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Select, Modal, Form, Input, Upload, Button, message, Row, Divider } from 'antd';
+import { Select, Modal, Form, Input, Upload, Button, message, Space, Divider } from 'antd';
+import type { SelectProps } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import typeProductsApi from '@/api/typeProductsApi';
 import ReactQuill from "react-quill";
@@ -7,6 +8,8 @@ import { productsRow, typeProducts } from '@/models';
 import { AnyObject } from 'antd/es/_util/type';
 import productsApi from '@/api/productsApi';
 import { STATIC_HOST } from '@/common';
+import { topping } from '@/models/topping';
+import toppingApi from '@/api/toppingApi';
 
 interface ProductsApiResponse {
     id: number;
@@ -24,9 +27,13 @@ const formItemLayout = {
 };
 
 const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOpen, setDataSource, dataRow, dataSource }) => {
+    const handleChange = (value: string[]) => {
+        setToppingSelected(value)
+    };
+
     const [ProductsImage, setProductsImage] = useState('')
     const props = {
-        action: `${STATIC_HOST}api/upload`,
+        action: `${STATIC_HOST}uploads`,
         onChange(info: any) {
             if (info.file.status !== 'uploading') {
             }
@@ -42,8 +49,8 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
     const [form] = Form.useForm();
     const [checkNick, setCheckNick] = useState(false);
     const [typeProducts, settypeProducts] = useState<typeProducts[]>([])
-
-
+    const [topping, setTopping] = useState<SelectProps['options']>([])
+    const [toppingSelected, setToppingSelected] = useState<string[]>([])
     useEffect(() => {
         form.validateFields(['nickname']);
     }, [checkNick, form]);
@@ -70,8 +77,20 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
         const fetchData = async () => {
             try {
                 const response = await typeProductsApi.getAllTypeProduct()
+                const toppingData = await toppingApi.getAllTopping()
                 if (response?.data) {
                     settypeProducts(response.data)
+                }
+                if (toppingData?.data) {
+                    let optionsTopping = toppingData.data.map((topping: topping) => {
+                        return {
+                            label: topping.Topping_Name,
+                            value: topping.Topping_ID,
+                            emoji: topping.Topping_Name,
+                            desc: topping.Topping_Price,
+                        }
+                    })
+                    setTopping(optionsTopping)
                 }
             } catch (err) {
                 console.error('Error fetching data:', err);
@@ -94,12 +113,13 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
             let link_image = ProductsImage
 
             console.log(dataRow?.idProduct)
-            if (!link_image.includes(STATIC_HOST)) {
+            if (!link_image?.includes(STATIC_HOST)) {
                 link_image = `${STATIC_HOST}uploads/${ProductsImage}`
             }
             const dataProduct = {
                 ...values,
                 Product_Image: link_image,
+                Product_Price: parseFloat(values.Product_Price)
             }
             if (!dataRow?.idProduct) {
                 let response = await productsApi.addProduct(dataProduct)
@@ -117,12 +137,19 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
                 if (!link_image_Update.includes(STATIC_HOST)) {
                     link_image_Update = `${STATIC_HOST}uploads/${dataRow.Product_Image}`
                 }
-
-                await productsApi.updateProduct({ ...dataProduct, idProduct: id, Product_Image: link_image_Update })
+                let updateProduct = { ...dataProduct, idProduct: id, Product_Image: link_image_Update }
+                let response = await productsApi.updateProduct(id, updateProduct)
                 let updateData = dataSource.map((row: productsRow) => row.idProduct === id ? {
                     ...dataProduct, key: id, Product_Image: link_image_Update, Product_Price: parseFloat(dataProduct.Product_Price), idProduct: id
                 } : row)
                 setDataSource(updateData)
+                for (const item of toppingSelected) {
+                    await toppingApi.productTopping({
+                        Topping_ID: item,
+                        idProduct: id
+                    });
+                }
+                
             }
             setIsModalOpen(false)
         } catch (errorInfo) {
@@ -152,7 +179,7 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
                     <Form.Item
                         {...formItemLayout}
                         label="loại sản phẩm"
-                        name="TypeProduct_Name"
+                        name="TypeProduct_ID"
                         rules={[{ required: true, message: 'Vui lòng chọn' }]}
                     >
                         <Select>
@@ -203,11 +230,29 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
                     >
                         <Input placeholder="Nhập mô tả" />
                     </Form.Item>
+                    <Form.Item
+                        {...formItemLayout}
+                        label="Topping"
+                    >
+                        <Select
+                            mode="multiple"
+                            style={{ width: '100%' }}
+                            placeholder="Lựa chọn topping"
+                            onChange={handleChange}
+                            options={topping}
+                            optionRender={(option) => (
+                                <Space>
+                                    <span role="img" aria-label={option.data.label}>
+                                        {option.data.emoji}
+                                    </span>
+                                    {option.data.desc}
+                                </Space>
+                            )}
+                        />
+                    </Form.Item>
 
                 </Form>
-                <Divider orientation="left" plain>
-                    Chọn size
-                </Divider>
+
             </Modal >
         </>
     );

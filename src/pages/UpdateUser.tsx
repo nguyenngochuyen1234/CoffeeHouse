@@ -9,7 +9,7 @@ const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
 };
 
-const Register = () => {
+const UpdateUser = () => {
     const navigate = useNavigate()
     const [messageApi, contextHolder] = message.useMessage();
     const [loading, setLoading] = useState(false)
@@ -31,9 +31,7 @@ const Register = () => {
         <>
             {contextHolder}
             <div className='w-[100%] login-container mt-8 min-h-[100vh] flex justify-center items-center py-8 flex-col'>
-                {/* Component để hiển thị thông báo */}
-                <h1 className='text-[35px] font-[700]'>Đăng ký tài khoản</h1>
-                {/* Form đăng ký */}
+                <h1 className='text-[35px] font-[700]'>Cập nhật thông tin</h1>
                 <Form
                     name="basic"
                     style={{
@@ -95,29 +93,15 @@ const Register = () => {
                     >
                         <Input />
                     </Form.Item>
-                    <Form.Item
-                        label="Tạo mật khẩu"
-                        name="User_Password"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Vui lòng nhập mật khẩu',
-                            },
-                        ]}
-                    >
-                        <Input.Password />
-                    </Form.Item>
                     <Form.Item className="my-4">
                         <Button type="primary" htmlType="submit" className='btn-submit' loading={loading}>
-                            Tạo tài khoản
+                            Cập nhật
                         </Button>
                     </Form.Item>
                 </Form>
-                {/* Link để chuyển hướng đến trang đăng nhập */}
-                <p>Bạn đã có tài khoản? <Link onClick={() => navigate('/login')}>Đăng nhập</Link></p>
             </div>
         </>
     );
 };
 
-export default Register;
+export default UpdateUser;

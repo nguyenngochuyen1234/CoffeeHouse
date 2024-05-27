@@ -3,20 +3,22 @@ import { Button, Modal, Form, Input } from 'antd';
 import typeProductsApi from '@/api/typeProductsApi';
 import { menu, menuRow, typeProductsRows } from '@/models';
 import menuApi from '@/api/menuApi';
+import toppingApi from '@/api/toppingApi';
+import { toppingRow } from '@/models/topping';
 
 
-export interface ModalMenuProductProps {
+export interface ModalToppingProps {
     isModalOpen: boolean
     setIsModalOpen: (newValue: boolean) => void
-    setDataSource: React.Dispatch<React.SetStateAction<menuRow[]>>
-    idMenu: string | null
+    setDataSource: React.Dispatch<React.SetStateAction<toppingRow[]>>
+    idTopping: string | null
 }
 const formItemLayout = {
     labelCol: { span: 7 },
     wrapperCol: { span: 20 },
 };
 
-const ModalMenuProduct: React.FC<ModalMenuProductProps> = ({ isModalOpen, setIsModalOpen, setDataSource, idMenu }) => {
+const ModalTopping: React.FC<ModalToppingProps> = ({ isModalOpen, setIsModalOpen, setDataSource, idTopping }) => {
 
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [form] = Form.useForm();
@@ -24,16 +26,18 @@ const ModalMenuProduct: React.FC<ModalMenuProductProps> = ({ isModalOpen, setIsM
     useEffect(() => {
         const fetchMenu = async () => {
             try {
-                if (idMenu) {
-                    const res = await menuApi.getMenuById(idMenu);
+                if (idTopping) {
+                    const res = await toppingApi.getToppingById(idTopping);
+                    console.log({res})
                     if (res.data) {
                         form.setFieldsValue({
-                            Name_Menu: res.data.Name_Menu || '',
+                            Topping_Name: res.data[0].Topping_Name || '',
+                            Topping_Price: res.data[0].Topping_Price || '',
                         });
                     }
                 } else {
                     form.setFieldsValue({
-                        Name_Menu: '',
+                        Topping_Name: '',
                     });
 
                 }
@@ -44,28 +48,29 @@ const ModalMenuProduct: React.FC<ModalMenuProductProps> = ({ isModalOpen, setIsM
         };
 
         fetchMenu();
-    }, [idMenu]);
+    }, [idTopping]);
 
 
     const onCheck = async () => {
         try {
             const values = await form.validateFields();
-            if (!idMenu) {
+            if (!idTopping) {
                 //add
-                let response = await menuApi.addMenu(values)
+                let response = await toppingApi.addTopping(values)
                 console.log({response})
-                setDataSource((prev: menuRow[]) => [...prev, {
-                    Menu_ID: response?.data.Menu_ID,
+                setDataSource((prev: toppingRow[]) => [...prev, {
+                    Topping_ID: response?.data.Topping_ID,
                     ...values
                 }])
             } else {
                 let updateRow = {
-                    Menu_ID: idMenu,
-                    Name_Menu: values.Name_Menu,
+                    Topping_ID: idTopping,
+                    Topping_Name: values.Topping_Name,
+                    Topping_Price: values.Topping_Price,
                 }
-                await menuApi.updateMenu(updateRow)
-                setDataSource((prev: menuRow[]) => prev.map(row => row.Menu_ID === idMenu ? {
-                    ...updateRow, key: idMenu
+                await toppingApi.updateTopping(idTopping,updateRow)
+                setDataSource((prev: toppingRow[]) => prev.map(row => row.Topping_ID === idTopping ? {
+                    ...updateRow, key: idTopping
                 } : row))
             }
             setIsModalOpen(false)
@@ -83,7 +88,7 @@ const ModalMenuProduct: React.FC<ModalMenuProductProps> = ({ isModalOpen, setIsM
     return (
         <>
             <Modal
-                title={!idMenu ? "Thêm menu" : "Sửa menu"}
+                title={!idTopping ? "Thêm menu" : "Sửa menu"}
                 open={isModalOpen}
                 onOk={onCheck}
                 confirmLoading={confirmLoading}
@@ -92,12 +97,21 @@ const ModalMenuProduct: React.FC<ModalMenuProductProps> = ({ isModalOpen, setIsM
                 <Form form={form} name="dynamic_rule" style={{ maxWidth: 600 }}>
                     <Form.Item
                         {...formItemLayout}
-                        name="Name_Menu"
-                        label="Tên menu"
+                        name="Topping_Name"
+                        label="Tên topping"
 
                         rules={[{ required: true, message: 'Vui lòng nhập' }]}
                     >
-                        <Input placeholder="Nhập tên menu" />
+                        <Input placeholder="Nhập tên topping" />
+                    </Form.Item>
+                    <Form.Item
+                        {...formItemLayout}
+                        name="Topping_Price"
+                        label="Giá topping"
+
+                        rules={[{ required: true, message: 'Vui lòng nhập' }]}
+                    >
+                        <Input placeholder="Nhập giá topping" />
                     </Form.Item>
                 </Form>
             </Modal>
@@ -105,4 +119,4 @@ const ModalMenuProduct: React.FC<ModalMenuProductProps> = ({ isModalOpen, setIsM
     );
 };
 
-export default ModalMenuProduct;
+export default ModalTopping;

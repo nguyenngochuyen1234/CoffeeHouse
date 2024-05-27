@@ -16,6 +16,10 @@ import Menu from "./features/Admin/Menu";
 import Collections from "./pages/Collections";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import { AuthProvider } from "./AuthContext";
+import Topping from "./features/Admin/Topping";
+import UpdateUser from "./pages/UpdateUser";
+import Orders from "./pages/Orders";
 function App() {
   return (
     <ConfigProvider
@@ -23,32 +27,36 @@ function App() {
         token: {
           // colorPrimary: '#faa515',
           // colorIcon: '#faa515',
-          fontSize:14,
+          fontSize: 14,
         },
       }}
     >
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<Home />}>
+            <Route index element={<BodyHome />} />
+            <Route path="blogs/:typeNews/:idNews" element={<BlogDetail />} />
+            <Route path="blogs/:typeNews" element={<Blogs />} />
+            <Route path="products/:idProduct" element={<ProductPage />} />
+            <Route path="/product-detail" element={<TypeProductPage />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path='/collections/:idMenu' element={<Collections />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/register' element={<Register />} />
+            <Route path='/updateUser' element={<UpdateUser />} />
+            <Route path='/orders' element={<Orders />} />
+          </Route>
+          <Route path="/admin" element={<Admin />}>
+            <Route path='typeProduct' element={<TypeProduct />} />
+            <Route path='product' element={<Product />} />
+            <Route path='typeNews' element={<TypeNews />} />
+            <Route path='news' element={<News />} />
+            <Route path='menu' element={<Menu />} />
+            <Route path='topping' element={<Topping />} />
+          </Route>
 
-      <Routes>
-        <Route path="/" element={<Home />}>
-          <Route index element={<BodyHome />} />
-          <Route path="blogs/:typeNews/:idNews" element={<BlogDetail />} />
-          <Route path="blogs/:typeNews" element={<Blogs />} />
-          <Route path="products/:idProduct" element={<ProductPage />} />
-          <Route path="/product-detail" element={<TypeProductPage />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path='/collections/:idMenu' element={<Collections />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
-        </Route>
-        <Route path="/admin" element={<Admin />}>
-          <Route path='typeProduct' element={<TypeProduct />} />
-          <Route path='product' element={<Product />} />
-          <Route path='typeNews' element={<TypeNews />} />
-          <Route path='news' element={<News />} />
-          <Route path='menu' element={<Menu />} />
-        </Route>
-
-      </Routes>
+        </Routes>
+      </AuthProvider>
     </ConfigProvider>
 
   )
