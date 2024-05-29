@@ -5,7 +5,19 @@ import { useAuth } from '@/AuthContext'
 import { Button, Dropdown, Badge } from 'antd'
 import type { MenuProps } from 'antd';
 import { Link } from "react-router-dom";
+import authApi from '@/api/auth'
 const HeaderNav = () => {
+  const { auth, orderDetails } = useAuth()
+  let navigate = useNavigate()
+  const handleLogout = async () => {
+    try{
+      await authApi.logout()
+      localStorage.clear()
+      window.location.reload(); 
+    }catch(err){
+
+    }
+  }
   const items: MenuProps['items'] = [
     {
       key: '1',
@@ -22,14 +34,12 @@ const HeaderNav = () => {
     {
       key: '3',
       label: (
-        <a target="_blank">
+        <a target="_blank" onClick={handleLogout}>
           Đăng xuất
         </a>
       ),
     },
   ];
-  const { auth, orderDetails } = useAuth()
-  let navigate = useNavigate()
 
   return (
     <div className='px-10 py-3.5 items-center border-b border-solid border-[#00000026] opacity-80 h-[60px] bg-white w-[100%] fixed top-0 left-0 z-10 flex-nowrap'>

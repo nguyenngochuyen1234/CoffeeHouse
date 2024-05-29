@@ -22,7 +22,7 @@ const authApi = {
   },
   logout() {
     const url = `api/auth/logout`
-    return axiosClient.get(url)
+    return axiosClient.post(url)
   },
   adminOnly() {
     const url = `api/auth/admin_only`

@@ -18,6 +18,10 @@ const orderApi = {
     const url = `api/get_all_order_details`
     return axiosClient.get(url)
   },
+  getAllOrderDetailsByIdUser() {
+    const url = `api/get_all_order_details_by_user`
+    return axiosClient.get(url)
+  },
   deleteOrderDetail(id: string) {
     const url = `api/delete_order_detail/${id}`
     return axiosClient.delete(url)
