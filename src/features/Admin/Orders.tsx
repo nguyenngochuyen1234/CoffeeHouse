@@ -1,186 +1,103 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import type { InputRef } from 'antd';
-import { Button, Form, Input, Popconfirm, Table } from 'antd';
-import type { FormInstance } from 'antd/es/form';
-import { AnyObject } from 'antd/es/_util/type';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import typeNewsApi from '@/api/typeNewsApi';
-import { typeNews, typeNewsRows } from '@/models';
-import ModalAddTypeNews from '@/components/Admin/modal/ModalAddTypeNews';
-import toppingApi from '@/api/toppingApi';
-import { topping, toppingRow } from '@/models/topping';
-import orderApi from '@/api/orderApi';
+import React from 'react';
+import { DownOutlined } from '@ant-design/icons';
+import type { TableColumnsType } from 'antd';
+import { Badge, Dropdown, Space, Table } from 'antd';
 
-const EditableContext = React.createContext<FormInstance<any> | null>(null);
-
-
-
-interface EditableRowProps {
-  index: number;
+interface DataType {
+  key: React.Key;
+  name: string;
+  platform: string;
+  version: string;
+  upgradeNum: number;
+  creator: string;
+  createdAt: string;
 }
 
-const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
-  const [form] = Form.useForm();
-  return (
-    <Form form={form} component={false}>
-      <EditableContext.Provider value={form}>
-        <tr {...props} />
-      </EditableContext.Provider>
-    </Form>
-  );
-};
-
-interface EditableCellProps {
-  title: React.ReactNode;
-  editable: boolean;
-  children: React.ReactNode;
-
+interface ExpandedDataType {
+  key: React.Key;
+  date: string;
+  name: string;
+  upgradeNum: string;
 }
 
-const EditableCell: React.FC<EditableCellProps> = ({
-  title,
-  editable,
-  children,
-
-  ...restProps
-}) => {
-  const form = useContext(EditableContext)!;
-
-
-
-  let childNode = children;
-
-  return <td {...restProps}>{childNode}</td>;
-};
-
-type EditableTableProps = Parameters<typeof Table>[0];
-
-
-type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
+const items = [
+  { key: '1', label: 'Action 1' },
+  { key: '2', label: 'Action 2' },
+];
 
 const OrdersAdmin: React.FC = () => {
-  const [dataSource, setDataSource] = useState<toppingRow[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [dataRow, setDataRow] = useState<AnyObject | null>(null);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await toppingApi.getAllTopping()
-        await orderApi.getAllOrderDetails()
-        if (response?.data) {
-          let dt = response.data.map((item: topping) => {   
-            return {
-              key: item.Topping_ID,
-              ...item
-            }
-          })
-          setDataSource(dt)
-        }
-        console.log({ response })
-      } catch (err) {
-        console.error('Error fetching data:', err);
-      }
-    };
+  const expandedRowRender = () => {
+    const columns: TableColumnsType<ExpandedDataType> = [
+      { title: 'Date', dataIndex: 'date', key: 'date' },
+      { title: 'Name', dataIndex: 'name', key: 'name' },
+      {
+        title: 'Status',
+        key: 'state',
+        render: () => <Badge status="success" text="Finished" />,
+      },
+      { title: 'Upgrade Status', dataIndex: 'upgradeNum', key: 'upgradeNum' },
+      {
+        title: 'Action',
+        key: 'operation',
+        render: () => (
+          <Space size="middle">
+            <a>Pause</a>
+            <a>Stop</a>
+            <Dropdown menu={{ items }}>
+              <a>
+                More <DownOutlined />
+              </a>
+            </Dropdown>
+          </Space>
+        ),
+      },
+    ];
 
-    fetchData();
-  }, [])
-
-  const handleEdit = (record: AnyObject) => {
-    setDataRow(record)
-    setIsModalOpen(true)
-  }
-
-  const handleDelete = async (key: string) => {
-    try {
-      const newData = dataSource.filter((item) => item.key !== key);
-      setDataSource(newData);
-      await toppingApi.deleteTopping(key)
-    } catch (err) {
-      console.error(err)
+    const data = [];
+    for (let i = 0; i < 3; ++i) {
+      data.push({
+        key: i.toString(),
+        date: '2014-12-24 23:12:00',
+        name: 'This is production name',
+        upgradeNum: 'Upgraded: 56',
+      });
     }
+    return <Table columns={columns} dataSource={data} pagination={false} />;
   };
 
-  const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
-    {
-      title: 'ID',
-      dataIndex: 'Topping_ID',
-      width: '150px',
-    },
-    {
-      title: 'Tên topping',
-      dataIndex: 'Topping_Name',
-    },
-    {
-      title: 'Giá topping',
-      dataIndex: 'Topping_Price',
-    },
-    {
-      title: 'Hành động',
-      dataIndex: 'action',
-      width: "110px",
-      render: (_, record: AnyObject) =>
-        dataSource.length >= 1 ? (
-          <div className='flex gap-4'>
-            <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
-              <DeleteOutlined className='text-[red] text-[18px]' />
-            </Popconfirm>
-            <EditOutlined onClick={() => handleEdit(record)} className='text-[18px] text-[#1677ff] cursor-pointer' />
-          </div>
-        ) : null,
-    },
+  const columns: TableColumnsType<DataType> = [
+    { title: 'Name', dataIndex: 'name', key: 'name' },
+    { title: 'Platform', dataIndex: 'platform', key: 'platform' },
+    { title: 'Version', dataIndex: 'version', key: 'version' },
+    { title: 'Upgraded', dataIndex: 'upgradeNum', key: 'upgradeNum' },
+    { title: 'Creator', dataIndex: 'creator', key: 'creator' },
+    { title: 'Date', dataIndex: 'createdAt', key: 'createdAt' },
+    { title: 'Action', key: 'operation', render: () => <a>Publish</a> },
   ];
 
-  const handleAdd = () => {
-    setDataRow({})
-    setIsModalOpen(true)
-  };
-
-  const handleSave = (row: toppingRow) => {
-    const newData = [...dataSource];
-    const index = newData.findIndex((item) => row.key === item.key);
-    const item = newData[index];
-    newData.splice(index, 1, {
-      ...item,
-      ...row,
+  const data: DataType[] = [];
+  for (let i = 0; i < 3; ++i) {
+    data.push({
+      key: i.toString(),
+      name: 'Screen',
+      platform: 'iOS',
+      version: '10.3.4.5654',
+      upgradeNum: 500,
+      creator: 'Jack',
+      createdAt: '2014-12-24 23:12:00',
     });
-    setDataSource(newData);
-  };
-
-  const components = {
-    body: {
-      row: EditableRow,
-      cell: EditableCell,
-    },
-  };
-
-  const columns = defaultColumns.map((col) => {
-    if (!col.editable) {
-      return col;
-    }
-    return {
-      ...col,
-      onCell: (record: toppingRow) => ({
-        record,
-        editable: col.editable,
-        dataIndex: col.dataIndex,
-        title: col.title,
-        handleSave,
-      }),
-    };
-  });
+  }
 
   return (
-    <div>
+    <>
       <Table
-        className='mt-3'
-        components={components}
-        rowClassName={() => 'editable-row'}
-        bordered
-        dataSource={dataSource}
-        columns={columns as ColumnTypes}
+        columns={columns}
+        expandable={{ expandedRowRender, defaultExpandedRowKeys: ['0'] }}
+        dataSource={data}
       />
-    </div>
+    </>
   );
 };
 
 export default OrdersAdmin;
+
