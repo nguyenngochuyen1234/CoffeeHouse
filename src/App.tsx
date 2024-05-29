@@ -20,6 +20,8 @@ import { AuthProvider } from "./AuthContext";
 import Topping from "./features/Admin/Topping";
 import UpdateUser from "./pages/UpdateUser";
 import Orders from "./pages/Orders";
+import PrivateRouteUser from "./routes/PrivateRouteUser";
+import OrdersAdmin from "./features/Admin/Orders";
 function App() {
   return (
     <ConfigProvider
@@ -46,13 +48,14 @@ function App() {
             <Route path='/updateUser' element={<UpdateUser />} />
             <Route path='/orders' element={<Orders />} />
           </Route>
-          <Route path="/admin" element={<Admin />}>
+          <Route path="/admin" element={<PrivateRouteUser component={Admin} role="admin" />}>
             <Route path='typeProduct' element={<TypeProduct />} />
             <Route path='product' element={<Product />} />
             <Route path='typeNews' element={<TypeNews />} />
             <Route path='news' element={<News />} />
             <Route path='menu' element={<Menu />} />
             <Route path='topping' element={<Topping />} />
+            <Route path='orders' element={<OrdersAdmin />} />
           </Route>
 
         </Routes>

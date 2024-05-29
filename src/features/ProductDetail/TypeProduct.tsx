@@ -61,7 +61,7 @@ const TypeProductPage = () => {
                </div>
             </div>
         </div>
-        {showInfoProduct && productInfo && <ProductInfomation  onClose={handleClickClose} productInfo={productInfo} />}
+        {showInfoProduct && productInfo && <ProductInfomation  onClose={handleClickClose} idProduct={productInfo.idProduct} />}
         {showSearchModal && <SearchProduct onClose={handleClickCloseSearchModal} handleClickProduct={handleClickProduct}/>}
         </>
     );

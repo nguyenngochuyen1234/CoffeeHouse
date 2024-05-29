@@ -2,7 +2,7 @@ import { Col, Row } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { UserOutlined, ShoppingOutlined } from '@ant-design/icons'
 import { useAuth } from '@/AuthContext'
-import { Button, Dropdown } from 'antd'
+import { Button, Dropdown, Badge } from 'antd'
 import type { MenuProps } from 'antd';
 import { Link } from "react-router-dom";
 const HeaderNav = () => {
@@ -28,8 +28,9 @@ const HeaderNav = () => {
       ),
     },
   ];
-  const { auth } = useAuth()
+  const { auth, orderDetails } = useAuth()
   let navigate = useNavigate()
+
   return (
     <div className='px-10 py-3.5 items-center border-b border-solid border-[#00000026] opacity-80 h-[60px] bg-white w-[100%] fixed top-0 left-0 z-10 flex-nowrap'>
       <Row>
@@ -45,8 +46,10 @@ const HeaderNav = () => {
         <Col span={2} className='flex justify-end items-center gap-4'>
           {auth ? <> <Dropdown menu={{ items }} placement="topRight" arrow>
             <Button size='large' shape="circle" icon={<UserOutlined />} />
-            </Dropdown>
-            <Button size='large' shape="circle" icon={<ShoppingOutlined />} onClick={() => navigate('/checkout')} />  
+          </Dropdown>
+            <Badge count={orderDetails.length}>
+              <Button size='large' type={orderDetails.length > 0 ? `primary` : 'default'} shape="circle" icon={<ShoppingOutlined />} onClick={() => navigate('/checkout')} />
+            </Badge>
           </> : <>
             <Button style={{ border: 'none' }} onClick={() => navigate('/register')}>Đăng ký</Button>
             <Button style={{ border: 'none' }} onClick={() => navigate('/login')}>Đăng nhập</Button>

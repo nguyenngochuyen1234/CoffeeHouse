@@ -2,13 +2,15 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import authApi from './api/auth';
 import { user } from './models';
 import { useNavigate } from 'react-router-dom';
-// Định nghĩa kiểu dữ liệu cho người dùng
-
+import { orderDetailsProduct } from './models/order';
+import orderApi from './api/orderApi';
 
 // Định nghĩa kiểu dữ liệu cho ngữ cảnh xác thực
 interface AuthContextType {
     auth: user | null;
     setAuth: React.Dispatch<React.SetStateAction<user | null>>;
+    orderDetails: orderDetailsProduct[] | [];
+    setOrderDetails: React.Dispatch<React.SetStateAction<orderDetailsProduct[] | []>>;
 }
 
 // Khởi tạo ngữ cảnh với giá trị mặc định là null
@@ -30,20 +32,25 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [auth, setAuth] = useState<user | null>(null);
+    const [orderDetails, setOrderDetails] = useState<orderDetailsProduct[] | []>([]);
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+
     const fetchUser = async () => {
         try {
             let res = await authApi.getUser();
-            console.log({res})
+            let resOrderDetails = await orderApi.getAllOrders()
+            if(resOrderDetails.data){
+                setOrderDetails(resOrderDetails.data)
+            }
             if (res?.data) {
                 setAuth(res.data);
             } else {
                 setAuth(null);
             }
-            // let admin = await authApi.adminOnly()
+            // let admin = await authApi.adminOnly();
             // if(admin?.data.admin){
-            //     navigate('admin/product')
+            //     navigate('admin/product');
             // }
         } catch (err) {
             console.log(err);
@@ -57,11 +64,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         fetchUser();
     }, [localStorage.getItem('access_token')]);
 
-
-
     return (
-        <AuthContext.Provider value={{ auth, setAuth }}>
+        <AuthContext.Provider value={{ auth, setAuth, orderDetails, setOrderDetails }}>
             {children}
         </AuthContext.Provider>
-    )
-}
+    );
+};

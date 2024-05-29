@@ -16,3 +16,6 @@ export function convertString(string:string) {
     return result;
 }
 
+export const formatCurrency = (amount:number) => {
+    return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}

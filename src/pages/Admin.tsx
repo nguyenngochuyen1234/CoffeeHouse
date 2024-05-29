@@ -39,6 +39,7 @@ const items: MenuItem[] = [
     getItem('Quản lý loại tin tức', 'manageTypeNews'),
     getItem('Quản lý tin tức', 'manageNews'),
   ]),
+  getItem('Quản lý đơn hàng', 'manageOrders'),
 ];
 
 const App: React.FC = () => {
@@ -68,6 +69,8 @@ const App: React.FC = () => {
       navigate('menu')
     }else if(selectedMenuId == "manageTopping"){
       navigate('topping')
+    }else if(selectedMenuId == "manageOrders"){
+      navigate('orders')
     }
   }, [selectedMenuId])
 

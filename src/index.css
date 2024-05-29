@@ -145,17 +145,12 @@ button.ant-btn-primary {
 .checkout_input {
     padding: 12px 20px;
     border-radius: 3px;
-    font-size: 18px;
+    font-size: 14px;
 }
 
 .checkout_input::placeholder {
-    font-size: 15px;
+    font-size: 14px;
 }
-
-/* .blog_home_blogtitle:hover {
-    cursor: pointer;
-    color: #E57905;
-} */
 
 .blog_item {
     flex: 0 0 calc(33.333% - 30px);

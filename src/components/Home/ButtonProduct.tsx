@@ -8,7 +8,6 @@ export interface ButtonProductProps {
     checked: boolean
 }
 export const ButtonProduct: React.FC<ButtonProductProps> = ({ name, price, type, checked, clickOption }) => {
-
     return (
         <div className='border-[#c9c9c9] cursor-pointer text-[17px] inline-block border-[1px] rounded-[5px] h-[46px] px-5' style={{ backgroundColor: `${checked ? '#e57905' : '#fff'}`, color: `${checked ? '#fff' : '#666'}` }} onClick={()=>clickOption(type, name)}>
             <div className='h-10 flex justify-center items-center'>

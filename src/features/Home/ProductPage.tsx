@@ -9,6 +9,8 @@ import iconDelivery from '@/assets/images/iconDelivery.svg'
 import toppingApi from '@/api/toppingApi'
 import { topping, toppingShow } from '@/models/topping'
 import { useAuth } from '@/AuthContext'
+import orderApi from '@/api/orderApi'
+import { Toppings, orderDetailsProduct } from '@/models/order'
 export interface ProductPageProps {
 
 }
@@ -30,29 +32,10 @@ const sizeProduct = [
   },
 ]
 
-const toppingProduct = [
-  {
-    name: "Trái vải",
-    price: 10000,
-    checked: false
-  },
-  {
-    name: "Đào miếng",
-    price: 10000,
-    checked: false
-  },
-  {
-    name: "Trân châu trắng",
-    price: 10000,
-    checked: false
-  },
-
-]
-
 const ProductPage: React.FC<ProductPageProps> = ({ }) => {
 
   const navigate = useNavigate()
-  const {auth} = useAuth()
+  const { auth } = useAuth()
 
   let idProduct = useParams().idProduct
   const [product, setProduct] = useState<products | null>()
@@ -64,6 +47,7 @@ const ProductPage: React.FC<ProductPageProps> = ({ }) => {
   const [originalPrice, setOriginalPrice] = useState(0)
   const [priceNotUpdate, setPriceNotUpdate] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [idDetailProductExist, setIdDetailProductExist] = useState('')
   const fetchDataProduct = async () => {
     setLoading(true)
     try {
@@ -71,13 +55,27 @@ const ProductPage: React.FC<ProductPageProps> = ({ }) => {
         let response = await productsApi.detailProduct(idProduct)
         let data = response.data
         let dataTopping = await toppingApi.getProductTopping(idProduct)
-        if(dataTopping.data){
-          let toppingShow = dataTopping.data.map((item:topping)=> {
-            return({
-              ...item, checked:false
+        let orderDetailProductExist = await orderApi.getOrderDetailsProduct(idProduct)
+        if(orderDetailProductExist.data[0]){
+          let detailsProductExits = orderDetailProductExist.data[0]
+          setIdDetailProductExist(detailsProductExits.Order_Detail_ID)
+          let sizeDefault = sizeProduct.map(item => item.name == detailsProductExits.Order_Size ? {...item, checked:true}:item)
+          let toppingDefault = dataTopping.data.map((item1:topping) => ({
+            ...item1,
+            checked: detailsProductExits.Toppings.some((item2:Toppings) => item2.Topping_Addition_Name === item1.Topping_Name)
+          }))
+          setSize(sizeDefault)
+          setTopping(toppingDefault)
+        }
+        else{
+          if (dataTopping.data) {
+            let toppingShow = dataTopping.data.map((item: topping) => {
+              return ({
+                ...item, checked: false
+              })
             })
-          })
-          setTopping(toppingShow)
+            setTopping(toppingShow)
+          }
         }
         if (data) {
           setProduct(data)
@@ -93,8 +91,6 @@ const ProductPage: React.FC<ProductPageProps> = ({ }) => {
 
     } catch (error) {
       setLoading(false)
-
-      console.log({ error })
     }
   }
   useEffect(() => {
@@ -148,16 +144,36 @@ const ProductPage: React.FC<ProductPageProps> = ({ }) => {
 
   }
 
-  const handleOrder = async() => {
-    try{
-      if(auth){
+  const handleOrder = async () => {
+    try {
+      setLoading(true)
+      if (auth && idProduct) {
+        // if(idDetailProductExist){
+        //   await orderApi.deleteOrderDetail(idDetailProductExist)
+        // }
         let sizeName = size.find(item => item.checked)?.name
         let toppings = topping.filter(item => item.checked)
-        console.log({sizeName, toppings, total})
-      }else{
-        navigate('login')
+        let toppingsAddition = toppings.map((topping: toppingShow) => {
+          return ({
+            Topping_Addition_Name: topping.Topping_Name,
+            Topping_Addition_Price: topping.Topping_Price
+          })
+        })
+        let response = await orderApi.AddOrder({
+          idProduct: idProduct,
+          Order_Size: sizeName || 'Vừa',
+          Order_Quantity: quantity,
+          Toppings: toppingsAddition
+        })
+        navigate('/checkout')
+      } else {
+        navigate('/login')
       }
-    }catch(err){
+      setLoading(false)
+
+    } catch (err) {
+      setLoading(false)
+
       console.log(err)
     }
   }
@@ -177,7 +193,7 @@ const ProductPage: React.FC<ProductPageProps> = ({ }) => {
           <Col xs={12} sm={12} md={12} className='pr-3'>
             <img className='w-[570px] h-[570px]' src={product?.Product_Image} alt="" />
           </Col>
-          <Col xs={12} sm={12} md={12}  className='px-3'>
+          <Col xs={12} sm={12} md={12} className='px-3'>
             <h1 className='text-[26px] font-[500]'>{product?.Product_Name}</h1>
             <div className='flex justify-between'>
               <p className='text-[26px] font-[500] text-[#e57905] mt-4 mb-10'>{total} đ</p>
@@ -196,7 +212,7 @@ const ProductPage: React.FC<ProductPageProps> = ({ }) => {
             {topping.length > 0 && <div>
               <p className='mb-3 text-[18px] font-[400] mt-6'>Topping</p>
               <div className='flex gap-4 flex-wrap'>
-                {topping.map((item:toppingShow) => <ButtonProduct name={item.Topping_Name} key={item.Topping_Name} checked={item.checked} price={item.Topping_Price} clickOption={clickOption} type="topping" />)}
+                {topping.map((item: toppingShow) => <ButtonProduct name={item.Topping_Name} key={item.Topping_Name} checked={item.checked} price={item.Topping_Price} clickOption={clickOption} type="topping" />)}
               </div>
             </div>}
             <div className='border-[#c9c9c9] border-[1px] rounded-[5px] h-[46px] flex overflow-hidden mt-4'>
