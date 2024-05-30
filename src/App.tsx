@@ -22,6 +22,7 @@ import UpdateUser from "./pages/UpdateUser";
 import Orders from "./pages/Orders";
 import PrivateRouteUser from "./routes/PrivateRouteUser";
 import OrdersAdmin from "./features/Admin/Orders";
+import Users from "./features/Admin/Users";
 function App() {
   return (
     <ConfigProvider
@@ -56,6 +57,7 @@ function App() {
             <Route path='menu' element={<Menu />} />
             <Route path='topping' element={<Topping />} />
             <Route path='orders' element={<OrdersAdmin />} />
+            <Route path='users' element={<Users />} />
           </Route>
 
         </Routes>

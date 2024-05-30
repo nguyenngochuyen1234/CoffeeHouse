@@ -62,9 +62,11 @@ const Topping: React.FC = () => {
   const [dataSource, setDataSource] = useState<toppingRow[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idTopping, setIdTopping] = useState('');
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true)
         const response = await toppingApi.getAllTopping()
         if (response?.data) {
           let dt = response.data.map((item: topping) => {
@@ -75,9 +77,10 @@ const Topping: React.FC = () => {
           })
           setDataSource(dt)
         }
-        console.log({ response })
       } catch (err) {
         console.error('Error fetching data:', err);
+      } finally {
+        setLoading(false)
       }
     };
 
@@ -91,11 +94,14 @@ const Topping: React.FC = () => {
 
   const handleDelete = async (key: string) => {
     try {
+      setLoading(true)
       const newData = dataSource.filter((item) => item.key !== key);
       setDataSource(newData);
       await toppingApi.deleteTopping(key)
     } catch (err) {
       console.error(err)
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -175,6 +181,7 @@ const Topping: React.FC = () => {
         Tạo mới
       </Button>
       <Table
+        loading={loading}
         className='mt-3'
         components={components}
         rowClassName={() => 'editable-row'}

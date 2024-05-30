@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ScheduleOutlined,
-  ShoppingOutlined 
+  ShoppingOutlined
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
@@ -40,6 +40,7 @@ const items: MenuItem[] = [
     getItem('Quản lý tin tức', 'manageNews'),
   ]),
   getItem('Quản lý đơn hàng', 'manageOrders'),
+  getItem('Quản lý người dùng', 'manageUser'),
 ];
 
 const App: React.FC = () => {
@@ -65,12 +66,14 @@ const App: React.FC = () => {
     } else if (selectedMenuId == "manageNews") {
       navigate('news')
 
-    }else if(selectedMenuId == "manageMenuProduct"){
+    } else if (selectedMenuId == "manageMenuProduct") {
       navigate('menu')
-    }else if(selectedMenuId == "manageTopping"){
+    } else if (selectedMenuId == "manageTopping") {
       navigate('topping')
-    }else if(selectedMenuId == "manageOrders"){
+    } else if (selectedMenuId == "manageOrders") {
       navigate('orders')
+    } else if (selectedMenuId == "manageUser") {
+      navigate('users')
     }
   }, [selectedMenuId])
 
@@ -83,7 +86,7 @@ const App: React.FC = () => {
           defaultSelectedKeys={['1']}
           mode="inline" items={items}
           onSelect={(item) => {
-            setSelectedMenuId(item.key.toString()); 
+            setSelectedMenuId(item.key.toString());
           }}
         />
       </Sider>

@@ -75,7 +75,8 @@ const Orders: React.FC = () => {
   ];
 
   return (
-    <div className='content'>
+    <div className='min-h-[100vh] p-8 mt-[80px]'>
+      <h1 className='text-center mb-5 text-[20px] font-[500]'>Danh sách đơn hàng</h1>
       <Table
         columns={columns}
         dataSource={data}

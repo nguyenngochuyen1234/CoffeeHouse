@@ -17,7 +17,7 @@ const authApi = {
     return axiosClient.get(url)
   },
   getAllUser() {
-    const url = `api/auth/getAll`
+    const url = `api/auth/getAllUser`
     return axiosClient.get(url)
   },
   logout() {

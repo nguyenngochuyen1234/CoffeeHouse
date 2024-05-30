@@ -24,7 +24,9 @@ const ModalMenuProduct: React.FC<ModalMenuProductProps> = ({ isModalOpen, setIsM
     useEffect(() => {
         const fetchMenu = async () => {
             try {
+                setConfirmLoading(true)
                 if (idMenu) {
+                    
                     const res = await menuApi.getMenuById(idMenu);
                     if (res.data) {
                         form.setFieldsValue({
@@ -35,11 +37,12 @@ const ModalMenuProduct: React.FC<ModalMenuProductProps> = ({ isModalOpen, setIsM
                     form.setFieldsValue({
                         Name_Menu: '',
                     });
-
                 }
             } catch (error) {
                 // Handle error if needed
                 console.error("Error fetching menu:", error);
+            }finally{
+                setConfirmLoading(false)
             }
         };
 
@@ -49,6 +52,7 @@ const ModalMenuProduct: React.FC<ModalMenuProductProps> = ({ isModalOpen, setIsM
 
     const onCheck = async () => {
         try {
+            setConfirmLoading(true)
             const values = await form.validateFields();
             if (!idMenu) {
                 //add
@@ -71,12 +75,13 @@ const ModalMenuProduct: React.FC<ModalMenuProductProps> = ({ isModalOpen, setIsM
             setIsModalOpen(false)
         } catch (errorInfo) {
             console.log('Failed:', errorInfo);
+        }finally{
+            setConfirmLoading(false)
         }
     };
 
 
     const handleCancel = () => {
-        console.log('Clicked cancel button');
         setIsModalOpen(false);
     };
 

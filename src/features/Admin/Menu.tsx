@@ -3,7 +3,7 @@ import type { InputRef } from 'antd';
 import { Button, Form, Input, Popconfirm, Table } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import { AnyObject } from 'antd/es/_util/type';
-import { DeleteOutlined, EditOutlined,PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { menu, menuRow } from '@/models';
 import menuApi from '@/api/menuApi';
 import ModalMenuProduct from '@/components/Admin/modal/ModalMenuProduct';
@@ -43,41 +43,48 @@ const Menu: React.FC = () => {
   const [dataSource, setDataSource] = useState<menuRow[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idMenu, setIdMenu] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true)
         const response = await menuApi.getAllmenu();
-        if(response?.data){
-          let dt = response.data.map((item:menu)=>{
-            return{
-              key:item.Menu_ID,
+        if (response?.data) {
+          let dt = response.data.map((item: menu) => {
+            return {
+              key: item.Menu_ID,
               ...item
             }
           })
           setDataSource(dt)
         }
-        console.log({response})
+        console.log({ response })
       } catch (err) {
         console.error('Error fetching data:', err);
+      } finally {
+        setLoading(false)
       }
     };
 
     fetchData();
   }, [])
-  
+
   const handleEdit = (id: string) => {
     setIdMenu(id)
     setIsModalOpen(true)
   }
-  
-  const handleDelete = async(key: string) => {
-    try{
+
+  const handleDelete = async (key: string) => {
+    try {
+      setLoading(true)
       const newData = dataSource.filter((item) => item.key !== key);
       setDataSource(newData);
-      console.log({key})
+      console.log({ key })
       await menuApi.deleteMenu(key)
-    }catch(err){
+    } catch (err) {
       console.error(err)
+    } finally{
+      setLoading(false)
     }
   };
 
@@ -101,7 +108,7 @@ const Menu: React.FC = () => {
             <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
               <DeleteOutlined className='text-[red] text-[18px]' />
             </Popconfirm>
-            <EditOutlined onClick={()=>handleEdit(record.key)} className='text-[18px] text-[#1677ff] cursor-pointer' />
+            <EditOutlined onClick={() => handleEdit(record.key)} className='text-[18px] text-[#1677ff] cursor-pointer' />
           </div>
         ) : null,
     },
@@ -147,11 +154,12 @@ const Menu: React.FC = () => {
 
   return (
     <div>
-      <ModalMenuProduct isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setDataSource={setDataSource} idMenu={idMenu}/>
+      <ModalMenuProduct isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setDataSource={setDataSource} idMenu={idMenu} />
       <Button className='my-4 absolute top-[1px]' type="primary" icon={<PlusOutlined />} onClick={handleAdd} >
         Tạo mới
       </Button>
       <Table
+        loading={loading}
         className='mt-3'
         components={components}
         rowClassName={() => 'editable-row'}

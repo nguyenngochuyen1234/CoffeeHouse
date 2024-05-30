@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import type { InputRef } from 'antd';
-import { Button, Form, Input,Image, Popconfirm, Table } from 'antd';
+import { Button, Form, Input, Image, Popconfirm, Table } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import { AnyObject } from 'antd/es/_util/type';
 import { DeleteOutlined, EditOutlined, PlusOutlined, EyeOutlined } from '@ant-design/icons';
@@ -44,17 +44,8 @@ const Product = () => {
 
     ...restProps
   }) => {
-    const inputRef = useRef<InputRef>(null);
-    const form = useContext(EditableContext)!;
 
 
-    const save = async () => {
-      try {
-        const values = await form.validateFields();
-      } catch (errInfo) {
-        console.log('Save failed:', errInfo);
-      }
-    };
 
     let childNode = children;
 
@@ -79,9 +70,11 @@ const Product = () => {
   const [dataSource, setDataSource] = useState<productsRow[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [dataRow, setDataRow] = useState<AnyObject | null>(null);
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true)
         const response = await productsApi.getAllProduct();
         if (response?.data) {
           let dt = response.data.map((item: products) => {
@@ -95,6 +88,8 @@ const Product = () => {
         console.log({ response })
       } catch (err) {
         console.error('Error fetching data:', err);
+      } finally {
+        setLoading(false)
       }
     };
 
@@ -108,11 +103,14 @@ const Product = () => {
 
   const handleDelete = async (key: string) => {
     try {
+      setLoading(true)
       const newData = dataSource.filter((item) => item.key !== key);
       setDataSource(newData);
       await productsApi.deleteProduct(key)
     } catch (err) {
       console.error(err)
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -141,11 +139,11 @@ const Product = () => {
       title: 'Ảnh sản phẩm',
       dataIndex: 'Product_Image',
       width: '150px',
-      render:(_:any, record: AnyObject) => 
-      <Image
-      width={90}
-      src={record.Product_Image}
-    />
+      render: (_: any, record: AnyObject) =>
+        <Image
+          width={90}
+          src={record.Product_Image}
+        />
     },
     {
       title: 'Mô tả',
@@ -165,7 +163,7 @@ const Product = () => {
             <EditOutlined onClick={() => handleEdit(record)} className='text-[18px] text-[#1677ff] cursor-pointer' />
           </div>
         ) : null,
-    },  
+    },
   ];
 
   const handleAdd = () => {
@@ -208,20 +206,21 @@ const Product = () => {
   });
   return (
 
-      <div>
-        <ModalProducts isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setDataSource={setDataSource} dataSource={dataSource} dataRow={dataRow} />
-        <Button className='my-4 absolute top-[1px]' type="primary" icon={<PlusOutlined />} onClick={handleAdd} >
-          Tạo mới
-        </Button>
-        <Table
-          className='mt-3'
-          components={components}
-          rowClassName={() => 'editable-row'}
-          bordered
-          dataSource={dataSource}
-          columns={columns as ColumnTypes}
+    <div>
+      <ModalProducts isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setDataSource={setDataSource} dataSource={dataSource} dataRow={dataRow} />
+      <Button className='my-4 absolute top-[1px]' type="primary" icon={<PlusOutlined />} onClick={handleAdd} >
+        Tạo mới
+      </Button>
+      <Table
+        loading={loading}
+        className='mt-3'
+        components={components}
+        rowClassName={() => 'editable-row'}
+        bordered
+        dataSource={dataSource}
+        columns={columns as ColumnTypes}
 
-        />
+      />
     </div>
 
   )

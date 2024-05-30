@@ -20,12 +20,13 @@ const formItemLayout = {
 
 const ModalTopping: React.FC<ModalToppingProps> = ({ isModalOpen, setIsModalOpen, setDataSource, idTopping }) => {
 
-    const [confirmLoading, setConfirmLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
 
     useEffect(() => {
         const fetchMenu = async () => {
             try {
+                setLoading(true)
                 if (idTopping) {
                     const res = await toppingApi.getToppingById(idTopping);
                     console.log({res})
@@ -44,6 +45,8 @@ const ModalTopping: React.FC<ModalToppingProps> = ({ isModalOpen, setIsModalOpen
             } catch (error) {
                 // Handle error if needed
                 console.error("Error fetching menu:", error);
+            }finally{
+                setLoading(false)
             }
         };
 
@@ -53,6 +56,7 @@ const ModalTopping: React.FC<ModalToppingProps> = ({ isModalOpen, setIsModalOpen
 
     const onCheck = async () => {
         try {
+            setLoading(true)
             const values = await form.validateFields();
             if (!idTopping) {
                 //add
@@ -76,12 +80,13 @@ const ModalTopping: React.FC<ModalToppingProps> = ({ isModalOpen, setIsModalOpen
             setIsModalOpen(false)
         } catch (errorInfo) {
             console.log('Failed:', errorInfo);
+        }finally{
+            setLoading(false)
         }
     };
 
 
     const handleCancel = () => {
-        console.log('Clicked cancel button');
         setIsModalOpen(false);
     };
 
@@ -91,10 +96,10 @@ const ModalTopping: React.FC<ModalToppingProps> = ({ isModalOpen, setIsModalOpen
                 title={!idTopping ? "Thêm menu" : "Sửa menu"}
                 open={isModalOpen}
                 onOk={onCheck}
-                confirmLoading={confirmLoading}
+                confirmLoading={loading}
                 onCancel={handleCancel}
             >
-                <Form form={form} name="dynamic_rule" style={{ maxWidth: 600 }}>
+                <Form form={form} name="dynamic_rule" style={{ maxWidth: 600 }} disabled={loading}>
                     <Form.Item
                         {...formItemLayout}
                         name="Topping_Name"

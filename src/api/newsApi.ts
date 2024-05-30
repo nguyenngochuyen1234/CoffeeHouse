@@ -19,7 +19,7 @@ const newsApi = {
 
   },
   updateNews(data: news) {
-    const url = "api/news"
+    const url = `api/news/${data.News_ID}`
     return axiosClient.put(url, data)
   },
   getNewsByTypeName(typeNews: string) {

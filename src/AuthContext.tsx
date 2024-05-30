@@ -35,12 +35,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [orderDetails, setOrderDetails] = useState<orderDetailsProduct[] | []>([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-
+    window.addEventListener('load', function () {
+        // Scroll to the top of the page
+        window.scrollTo(0, 0);
+    });
     const fetchUser = async () => {
         try {
             let res = await authApi.getUser();
             let resOrderDetails = await orderApi.getAllOrders()
-            if(resOrderDetails.data){
+            if (resOrderDetails.data) {
                 setOrderDetails(resOrderDetails.data)
             }
             if (res?.data) {

@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import type { InputRef } from 'antd';
-import { Button, Form, Input,Image, Popconfirm, Table } from 'antd';
+import { Button, Form, Input, Image, Popconfirm, Table } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import { AnyObject } from 'antd/es/_util/type';
 import { DeleteOutlined, EditOutlined, PlusOutlined, EyeOutlined } from '@ant-design/icons';
@@ -39,29 +39,7 @@ const News = () => {
 
   }
 
-  const EditableCell: React.FC<EditableCellProps> = ({
-    title,
-    editable,
-    children,
 
-    ...restProps
-  }) => {
-    const inputRef = useRef<InputRef>(null);
-    const form = useContext(EditableContext)!;
-
-
-    const save = async () => {
-      try {
-        const values = await form.validateFields();
-      } catch (errInfo) {
-        console.log('Save failed:', errInfo);
-      }
-    };
-
-    let childNode = children;
-
-    return <td {...restProps}>{childNode}</td>;
-  };
 
   type EditableTableProps = Parameters<typeof Table>[0];
 
@@ -78,11 +56,13 @@ const News = () => {
   const [dataSource, setDataSource] = useState<newsRow[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalReviewOpen, setIsModalReviewOpen] = useState(false);
+  const [loading, setLoading] = useState(false)
   const [contentRow, setContentRow] = useState<newsRow | null>(null)
   const [dataRow, setDataRow] = useState<AnyObject | null>(null);
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true)
         const response = await newsApi.getAllNews();
         if (response?.data) {
           let dt = response.data.map((item: news) => {
@@ -96,6 +76,9 @@ const News = () => {
         console.log({ response })
       } catch (err) {
         console.error('Error fetching data:', err);
+
+      } finally {
+        setLoading(false)
       }
     };
 
@@ -109,11 +92,14 @@ const News = () => {
 
   const handleDelete = async (key: string) => {
     try {
+      setLoading(true)
       const newData = dataSource.filter((item) => item.key !== key);
       setDataSource(newData);
       await newsApi.deleteNews(key)
     } catch (err) {
       console.error(err)
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -137,11 +123,11 @@ const News = () => {
       title: 'Ảnh tiêu đề',
       dataIndex: 'News_Image',
       width: '150px',
-      render:(_, record: AnyObject) => 
-      <Image
-      width={200}
-      src={record.News_Image}
-    />
+      render: (_, record: AnyObject) =>
+        <Image
+          width={200}
+          src={record.News_Image}
+        />
     },
     {
       title: 'Mô tả',
@@ -159,7 +145,7 @@ const News = () => {
               <DeleteOutlined className='text-[red] text-[18px]' />
             </Popconfirm>
             <EditOutlined onClick={() => handleEdit(record)} className='text-[18px] text-[#1677ff] cursor-pointer' />
-            <EyeOutlined onClick={() => rowClickHandler(record)} className='text-[18px] text-[#1677ff] cursor-pointer'/>
+            <EyeOutlined onClick={() => rowClickHandler(record)} className='text-[18px] text-[#1677ff] cursor-pointer' />
           </div>
         ) : null,
     },
@@ -172,21 +158,10 @@ const News = () => {
 
   const handleSave = (row: DataType) => {
     const newData = [...dataSource];
-    // const index = newData.findIndex((item) => row.key === item.key);
-    // const item = newData[index];
-    // newData.splice(index, 1, {
-    //   ...item,
-    //   ...row,
-    // });
+
     setDataSource(newData);
   };
 
-  const components = {
-    body: {
-      row: EditableRow,
-      cell: EditableCell,
-    },
-  };
 
   const columns = defaultColumns.map((col) => {
     if (!col.editable) {
@@ -203,7 +178,7 @@ const News = () => {
       }),
     };
   });
-  const rowClickHandler = (record:any) => {
+  const rowClickHandler = (record: any) => {
     setContentRow(record)
     setIsModalReviewOpen(true)
   };
@@ -212,21 +187,21 @@ const News = () => {
 
   return (
 
-      <div>
-        <ModalNews isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setDataSource={setDataSource} dataRow={dataRow} dataSource={dataSource}/>
-        <ModalReviewNews isModalReviewOpen={isModalReviewOpen} setIsModalReviewOpen={setIsModalReviewOpen} contentRow={contentRow} />
-        <Button className='my-4 absolute top-[1px]' type="primary" icon={<PlusOutlined />} onClick={handleAdd} >
-          Tạo mới
-        </Button>
-        <Table
-          className='mt-3'
-          components={components}
-          rowClassName={() => 'editable-row'}
-          bordered
-          dataSource={dataSource}
-          columns={columns as ColumnTypes}
+    <div>
+      <ModalNews isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setDataSource={setDataSource} dataRow={dataRow} dataSource={dataSource} />
+      <ModalReviewNews isModalReviewOpen={isModalReviewOpen} setIsModalReviewOpen={setIsModalReviewOpen} contentRow={contentRow} />
+      <Button className='my-4 absolute top-[1px]' type="primary" icon={<PlusOutlined />} onClick={handleAdd} >
+        Tạo mới
+      </Button>
+      <Table
+        loading={loading}
+        className='mt-3'
+        rowClassName={() => 'editable-row'}
+        bordered
+        dataSource={dataSource}
+        columns={columns as ColumnTypes}
 
-        />
+      />
     </div>
 
   )

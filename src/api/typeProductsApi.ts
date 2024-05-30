@@ -10,7 +10,7 @@ const typeProductsApi={
     return axiosClient.post(url, data)
   }, 
   updateTypeProduct(data:typeProducts){
-    const url=`api/typeProduct`
+    const url=`api/typeProduct/${data.TypeProduct_ID}`
     return axiosClient.put(url, data)
   },
   deleteTypeProduct(id:string){

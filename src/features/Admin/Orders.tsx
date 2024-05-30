@@ -102,7 +102,8 @@ const OrdersAdmin: React.FC = () => {
     ];
 
     return (
-        <>
+        <div className='pt-5'>
+        <h1 className='mb-5 text-center text-[25px] font-700'>Danh sách đơn hàng</h1>
             <Table
                 columns={columns}
                 dataSource={data}
@@ -110,7 +111,7 @@ const OrdersAdmin: React.FC = () => {
                 loading={loading}
             />
             {contextHolder}
-        </>
+        </div>
     );
 };
 

@@ -45,7 +45,7 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
             }
         },
     };
-    const [confirmLoading, setConfirmLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
     const [checkNick, setCheckNick] = useState(false);
     const [typeProducts, settypeProducts] = useState<typeProducts[]>([])
@@ -76,6 +76,7 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setLoading(true)
                 const response = await typeProductsApi.getAllTypeProduct()
                 const toppingData = await toppingApi.getAllTopping()
                 if (response?.data) {
@@ -94,6 +95,8 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
                 }
             } catch (err) {
                 console.error('Error fetching data:', err);
+            } finally {
+                setLoading(false)
             }
         };
 
@@ -109,26 +112,28 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
     };
     const onCheck = async () => {
         try {
+            setLoading(true)
             const values = await form.validateFields();
             let link_image = ProductsImage
-
-            console.log(dataRow?.idProduct)
-            if (!link_image?.includes(STATIC_HOST)) {
-                link_image = `${STATIC_HOST}uploads/${ProductsImage}`
-            }
             const dataProduct = {
                 ...values,
-                Product_Image: link_image,
+                Product_Image: `${STATIC_HOST}uploads/${link_image}`,
                 Product_Price: parseFloat(values.Product_Price)
             }
             if (!dataRow?.idProduct) {
                 let response = await productsApi.addProduct(dataProduct)
-                if (response.data.id) {
-                    let id = response.data.id
+                if (response.data.idProduct) {
+                    let id = response.data.idProduct
                     let typeProductName = typeProducts.find(item => item.TypeProduct_ID == dataProduct.TypeProduct_Name)
                     let dataUpdate = [...dataSource, { ...dataProduct, key: id, idProduct: id, TypeProduct_Name: typeProductName?.TypeProduct_Name }]
-                    console.log(id)
                     setDataSource(dataUpdate)
+                    await toppingApi.deleteProductTopping(id)
+                    for (const item of toppingSelected) {
+                        await toppingApi.productTopping({
+                            Topping_ID: item,
+                            idProduct: id
+                        });
+                    }
                 }
             } else {
                 let id = dataRow.idProduct
@@ -138,22 +143,25 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
                     link_image_Update = `${STATIC_HOST}uploads/${dataRow.Product_Image}`
                 }
                 let updateProduct = { ...dataProduct, idProduct: id, Product_Image: link_image_Update }
-                let response = await productsApi.updateProduct(id, updateProduct)
+                await productsApi.updateProduct(id, updateProduct)
                 let updateData = dataSource.map((row: productsRow) => row.idProduct === id ? {
                     ...dataProduct, key: id, Product_Image: link_image_Update, Product_Price: parseFloat(dataProduct.Product_Price), idProduct: id
                 } : row)
                 setDataSource(updateData)
+                await toppingApi.deleteProductTopping(id)
                 for (const item of toppingSelected) {
                     await toppingApi.productTopping({
                         Topping_ID: item,
                         idProduct: id
                     });
                 }
-                
+
             }
             setIsModalOpen(false)
         } catch (errorInfo) {
             console.log('Failed:', errorInfo);
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -169,11 +177,11 @@ const ModalProducts: React.FC<ModalProductsProps> = ({ isModalOpen, setIsModalOp
                 title={!dataRow?.Product_Name ? "Thêm sản phẩm" : "Sửa sản phẩm"}
                 open={isModalOpen}
                 onOk={onCheck}
-                confirmLoading={confirmLoading}
+                confirmLoading={loading}
                 onCancel={handleCancel}
                 width={800}
             >
-                <Form form={form} initialValues={{ TypeProduct_Name: dataRow?.TypeProduct_Name || '' }} name="dynamic_rule" style={{ maxWidth: 800 }}>
+                <Form form={form} initialValues={{ TypeProduct_Name: dataRow?.TypeProduct_Name || '' }} name="dynamic_rule" style={{ maxWidth: 800 }} disabled={loading}>
 
 
                     <Form.Item

@@ -31,6 +31,10 @@ const toppingApi = {
   }) {
     const url = `api/product_topping`
     return axiosClient.post(url, data)
+  },
+  deleteProductTopping(idProduct:string){
+    const url = `api/delete_product_topping/${idProduct}`
+    return axiosClient.delete(url)
   }
 }
 export default toppingApi

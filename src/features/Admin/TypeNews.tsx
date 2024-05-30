@@ -74,9 +74,11 @@ const TypeNews: React.FC = () => {
   const [dataSource, setDataSource] = useState<typeNewsRows[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [dataRow, setDataRow] = useState<AnyObject | null>(null);
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true)
         const response = await typeNewsApi.getAllTypeNews();
         if (response?.data) {
           let dt = response.data.map((item: typeNews) => {
@@ -90,6 +92,8 @@ const TypeNews: React.FC = () => {
         console.log({ response })
       } catch (err) {
         console.error('Error fetching data:', err);
+      } finally {
+        setLoading(false)
       }
     };
 
@@ -103,11 +107,14 @@ const TypeNews: React.FC = () => {
 
   const handleDelete = async (key: number) => {
     try {
+      setLoading(true)
       const newData = dataSource.filter((item) => item.key !== key);
       setDataSource(newData);
       await typeNewsApi.deleteTypeNews(key)
     } catch (err) {
       console.error(err)
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -183,6 +190,7 @@ const TypeNews: React.FC = () => {
         Tạo mới
       </Button>
       <Table
+        loading={loading}
         className='mt-3'
         components={components}
         rowClassName={() => 'editable-row'}

@@ -41,7 +41,7 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
     const [NewsImage, setNewsImage] = useState('')
     const props = {
 
-        action: `${STATIC_HOST}api/upload`,
+        action: `${STATIC_HOST}uploads`,
         onChange(info: any) {
             if (info.file.status !== 'uploading') {
             }
@@ -92,6 +92,7 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
 
     useEffect(() => {
         const fetchData = async () => {
+            setConfirmLoading(true)
             try {
                 const response = await typeNewsApi.getAllTypeNews()
                 if (response?.data) {
@@ -100,6 +101,9 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
                 console.log({ response })
             } catch (err) {
                 console.error('Error fetching data:', err);
+            }
+            finally{
+                setConfirmLoading(false)
             }
         };
 
@@ -115,6 +119,7 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
     };
     const onCheck = async () => {
         try {
+            setConfirmLoading(true)
             const values = await form.validateFields();
             let data = {
                 ...values,
@@ -139,12 +144,12 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
                 }
             } else {
                 let response = await newsApi.AddNews(data)
-                let id = response.data.id
+                let id = response.data.News_ID
                 if (id) {
                     let typeNewName = typeNews.find(item => item.TypeNews_ID == values.TypeNews_Name)
                     let newData = [...dataSource, {
                         ...data,
-                        News_ID:id,
+                        News_ID: id,
                         key: id, TypeNews_Name: typeNewName?.TypeNews_Name
                     }]
                     setDataSource(newData)
@@ -154,6 +159,8 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
             setIsModalOpen(false)
         } catch (errorInfo) {
             console.log('Failed:', errorInfo);
+        }finally{
+            setConfirmLoading(false)
         }
     };
 
@@ -173,13 +180,11 @@ const ModalNews: React.FC<ModalNewsProps> = ({ isModalOpen, setIsModalOpen, setD
                 onCancel={handleCancel}
                 width={800}
             >
-                <Form form={form} name="dynamic_rule" style={{ maxWidth: 800 }}>
-
-
+                <Form form={form} name="dynamic_rule" style={{ maxWidth: 800 }} disabled={confirmLoading}>
                     <Form.Item
                         {...formItemLayout}
                         label="Chủ đề"
-                        name="TypeNews_Name"
+                        name="TypeNews_ID"
                         rules={[{ required: true, message: 'Vui lòng nhập' }]}
                     >
                         <Select>

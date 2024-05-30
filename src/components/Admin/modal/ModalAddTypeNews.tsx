@@ -5,7 +5,7 @@ import { typeNewsRows } from '@/models';
 import { AnyObject } from 'antd/es/_util/type';
 
 interface TypeNewsApiResponse {
-  id: number;
+  TypeNews_ID: number;
 } 
 export interface ModalAddTypeNewsProps {
   isModalOpen: boolean
@@ -38,14 +38,15 @@ const ModalAddTypeNews: React.FC<ModalAddTypeNewsProps> = ({ isModalOpen, setIsM
 
   const onCheck = async () => {
     try {
+      setConfirmLoading(true)
       const values = await form.validateFields();
       if(!dataRow?.TypeNews_Name){
         //add
         let response = await typeNewsApi.AddTypeNews(values)
         let data:TypeNewsApiResponse = response.data
         setDataSource((prev: typeNewsRows[]) => [...prev, {
-          key: data.id,
-          TypeNews_ID: data.id.toString(),
+          key: data.TypeNews_ID,
+          TypeNews_ID: data.TypeNews_ID.toString(),
           TypeNews_Name: values.TypeNews_Name,
         }])
       }else{
@@ -63,6 +64,8 @@ const ModalAddTypeNews: React.FC<ModalAddTypeNewsProps> = ({ isModalOpen, setIsM
       setIsModalOpen(false)
     } catch (errorInfo) {
       console.log('Failed:', errorInfo);
+    }finally{
+      setConfirmLoading(false)
     }
   };
 
@@ -81,7 +84,7 @@ const ModalAddTypeNews: React.FC<ModalAddTypeNewsProps> = ({ isModalOpen, setIsM
         confirmLoading={confirmLoading}
         onCancel={handleCancel}
       >
-        <Form form={form} initialValues={{TypeNews_Name:dataRow?.TypeNews_Name || ''}} name="dynamic_rule" style={{ maxWidth: 600 }}>
+        <Form form={form} disabled={confirmLoading} initialValues={{TypeNews_Name:dataRow?.TypeNews_Name || ''}} name="dynamic_rule" style={{ maxWidth: 600 }}>
           <Form.Item
             {...formItemLayout}
             name="TypeNews_Name"
